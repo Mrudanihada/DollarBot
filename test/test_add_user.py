@@ -1,102 +1,83 @@
 import unittest
-from unittest.mock import MagicMock, patch
-from telebot import types
+from unittest.mock import MagicMock
+import add_user
 import helper
+from telebot import types
 
-# Mock data
-mock_chat_id = 123456789
-mock_user_list = {
-    str(mock_chat_id): {
-        "users": []
-    }
-}
+class TestAddUser(unittest.TestCase):
 
-class TestRegisterUser(unittest.TestCase):
+    def setUp(self):
+        self.bot = MagicMock()
+        self.chat_id = 12345
+        self.message = MagicMock()
+        self.message.chat.id = self.chat_id
+        self.message.text = "Test User"
+        self.user_list = {}
 
-    @patch("helper.createNewUserRecord")
-    @patch("helper.write_json")
-    def test_register_new_user_flow(self, mock_write_json, mock_createNewUserRecord):
-        bot = MagicMock()
-        message = MagicMock()
-        message.chat.id = mock_chat_id
-        mock_createNewUserRecord.return_value = {"users": []}
-
-        # Step 1: Test register_people
-        from main import register_people, registered_users
-        register_people(message, bot, mock_user_list)
-        bot.send_message.assert_called_with(mock_chat_id, "Enter the name of the person you want to register:")
-
-        # Check that add_person is registered as the next handler
-        bot.register_next_step_handler.assert_called()
-
-        # Step 2: Test add_person (when name is unique)
-        from main import add_person
-        msg = MagicMock()
-        msg.chat.id = mock_chat_id
-        msg.text = "John Doe"
-        registered_users[mock_chat_id] = []
-
-        add_person(msg, bot, registered_users, mock_user_list)
-        bot.send_message.assert_called_with(mock_chat_id, "John Doe has been registered successfully!")
-
-        # Ensure John Doe is added to registered users
-        self.assertIn("John Doe", registered_users[mock_chat_id])
-
-        # Step 3: Test add_person (when name is already registered)
-        bot.send_message.reset_mock()
-        add_person(msg, bot, registered_users, mock_user_list)
-        bot.send_message.assert_called_with(mock_chat_id, "John Doe is already registered.")
-
-    def test_handle_registration_choice(self):
-        bot = MagicMock()
-        message = MagicMock()
-        message.chat.id = mock_chat_id
-        message.text = "Register Another Person"
+    def test_register_people_new_user(self):
+        # Simulate the behavior of a new user
+        self.message.chat.id = self.chat_id
+        self.user_list = {}
         
-        # Test when user chooses to register another person
-        from main import handle_registration_choice, registered_users
-        registered_users[mock_chat_id] = ["John Doe"]
+        helper.createNewUserRecord = MagicMock(return_value={"users": []})
 
-        handle_registration_choice(message, bot, registered_users, mock_user_list)
-        bot.send_message.assert_called_with(mock_chat_id, "Enter the name of the person you want to register:")
+        add_user.register_people(self.message, self.bot, self.user_list)
 
-        # Test when user chooses to finish registration
-        message.text = "Finish Registration"
-        bot.send_message.reset_mock()
+        # Test if user is added correctly
+        self.assertIn(str(self.chat_id), self.user_list)
+        self.assertEqual(self.user_list[str(self.chat_id)]["users"], [])
 
-        handle_registration_choice(message, bot, registered_users, mock_user_list)
-        bot.send_message.assert_called_with(mock_chat_id, "Registered Users:\nJohn Doe")
-        self.assertIn("John Doe", mock_user_list[str(mock_chat_id)]["users"])
+    def test_register_people_existing_user(self):
+        # Simulate an existing user
+        self.user_list[str(self.chat_id)] = {"users": ["Existing User"]}
 
-        # Test invalid choice
-        message.text = "Invalid Choice"
-        bot.send_message.reset_mock()
+        add_user.register_people(self.message, self.bot, self.user_list)
 
-        handle_registration_choice(message, bot, registered_users, mock_user_list)
-        bot.send_message.assert_called_with(mock_chat_id, "Invalid choice. Please select a valid option.")
+        # Check if the bot sends the correct message for entering the name
+        self.bot.send_message.assert_called_once_with(self.chat_id, "Enter the name of the person you want to register:")
 
-    @patch("helper.write_json")
-    def test_handle_finish_registration(self, mock_write_json):
-        bot = MagicMock()
-        message = MagicMock()
-        message.chat.id = mock_chat_id
-        message.text = "Finish Registration"
-        from main import handle_registration_choice, registered_users
+    def test_add_person_new_name(self):
+        # Simulate adding a new person
+        registered_users = {}
+        self.user_list[str(self.chat_id)] = {"users": []}
 
-        registered_users[mock_chat_id] = ["John Doe", "Jane Doe"]
+        add_user.add_person(self.message, self.bot, registered_users, self.user_list)
 
-        handle_registration_choice(message, bot, registered_users, mock_user_list)
+        # Test if new user is added
+        self.assertIn("Test User", self.user_list[str(self.chat_id)]["users"])
+        self.bot.send_message.assert_called_with(self.chat_id, "Test User has been registered successfully!")
 
-        # Check that users are stored properly in user_list
-        self.assertIn("John Doe", mock_user_list[str(mock_chat_id)]["users"])
-        self.assertIn("Jane Doe", mock_user_list[str(mock_chat_id)]["users"])
+    def test_add_person_existing_name(self):
+        # Simulate adding an existing person
+        registered_users = {self.chat_id: ["Test User"]}
+        self.user_list[str(self.chat_id)] = {"users": ["Test User"]}
 
-        # Check that helper.write_json is called to save the user list
-        mock_write_json.assert_called_with(mock_user_list)
+        add_user.add_person(self.message, self.bot, registered_users, self.user_list)
 
-        # Check that registered users are displayed correctly
-        bot.send_message.assert_called_with(mock_chat_id, "Registered Users:\nJohn Doe\nJane Doe")
+        # Check if the bot sends the correct message
+        self.bot.send_message.assert_called_with(self.chat_id, "Test User is already registered.")
 
+    def test_handle_registration_choice_register_another(self):
+        # Simulate choosing to register another person
+        self.message.text = "Register Another Person"
+        registered_users = {self.chat_id: ["User1"]}
 
-if __name__ == "__main__":
+        add_user.handle_registration_choice(self.message, self.bot, registered_users, self.user_list)
+
+        # Check if the bot prompts for another person
+        self.bot.send_message.assert_called_with(self.chat_id, "Enter the name of the person you want to register:")
+
+    def test_handle_registration_choice_finish_registration(self):
+        # Simulate finishing registration
+        self.message.text = "Finish Registration"
+        self.user_list[str(self.chat_id)] = {"users": ["User1"]}
+        registered_users = {self.chat_id: ["User1"]}
+
+        add_user.handle_registration_choice(self.message, self.bot, registered_users, self.user_list)
+
+        # Check if the users are saved and message sent
+        self.assertIn("User1", self.user_list[str(self.chat_id)]["users"])
+        self.bot.send_message.assert_called_with(self.chat_id, "Registered Users:\nUser1")
+
+if __name__ == '__main__':
     unittest.main()

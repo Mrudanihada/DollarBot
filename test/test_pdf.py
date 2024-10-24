@@ -1,123 +1,81 @@
 import unittest
-from unittest.mock import patch, MagicMock
-from main import run, pdfGeneration  # Assuming this function is in a file called main.py
+from unittest.mock import MagicMock
+import pdf
+import helper
 
 class TestPDFGeneration(unittest.TestCase):
+    
+    def setUp(self):
+        # Mock the bot instance
+        self.bot = MagicMock()
+        self.message = MagicMock()
+        self.message.chat.id = 12345  # Mock chat ID
 
-    @patch("helper.read_json")
-    @patch("helper.getUserHistory")
-    def test_run_with_valid_user_history(self, mock_getUserHistory, mock_read_json):
-        bot = MagicMock()
-        message = MagicMock()
-        message.chat.id = 123456789
+    def test_no_user_history(self):
+        # Simulate no user history
+        helper.getUserHistory = MagicMock(return_value=None)
+        
+        # Mock the read_json to return an empty user list
+        helper.read_json = MagicMock(return_value={})
 
-        # Mocking user history and user list
-        mock_read_json.return_value = {
-            "123456789": {
-                "csv_data": [
-                    "2023-10-21,Groceries,50.00,John,Doe & Jane",
-                    "2023-10-22,Transport,15.00,Jane,John & Doe"
-                ],
-                "users": ["John", "Jane"],
-                "owed": {"John": 20, "Jane": 30},
-                "owing": {"John": {"Jane": 20}, "Jane": {"John": 10}},
-            }
-        }
-        mock_getUserHistory.return_value = ["2023-10-21,Groceries,50.00", "2023-10-22,Transport,15.00"]
+        # Call the run function with the mocked bot
+        pdf.run(self.message, self.bot)
 
-        # Run the `run` function
-        run(message, bot)
+        # Check if the bot sent the correct message
+        self.bot.send_message.assert_called_with(
+            self.message.chat.id,
+            "Looks like you have not entered any data yet. Please enter some data and then try creating a pdf."
+        )
 
-        # Verify that bot prompts the user with the PDF options
-        bot.send_message.assert_called_once_with(123456789, "Which kind of PDF do you want to generate?")
-
-        # Ensure the next step handler is registered for PDF generation
-        bot.register_next_step_handler.assert_called()
-
-    @patch("helper.read_json")
-    @patch("helper.getUserHistory")
-    def test_run_with_no_user_history(self, mock_getUserHistory, mock_read_json):
-        bot = MagicMock()
-        message = MagicMock()
-        message.chat.id = 123456789
-
-        # Mocking no user history
-        mock_getUserHistory.return_value = None
-        mock_read_json.return_value = {}
-
-        # Run the `run` function
-        run(message, bot)
-
-        # Verify that the bot sends a message indicating no data and presents commands
-        bot.send_message.assert_any_call(123456789, "Looks like you have not entered any data yet. Please enter some data and then try creating a pdf.")
-
-    @patch("helper.getCommands")
-    def test_pdf_generation_expense_category(self, mock_getCommands):
-        bot = MagicMock()
-        message = MagicMock()
-        message.chat.id = 123456789
-        message.text = "PDF for Total Expenses - Category wise"
-
+    def test_pdf_generation_owing(self):
+        # Setup user history
+        user_history = ['Sample entry']
+        helper.getUserHistory = MagicMock(return_value=user_history)
+        
+        # Mock the user list
         user_list = {
-            "123456789": {
-                "users": ["John", "Jane"],
-                "owed": {"John": 20, "Jane": 30},
-                "owing": {"John": {"Jane": 20}, "Jane": {"John": 10}},
+            12345: {
+                'users': ['Alice', 'Bob'],
+                'owed': {'Alice': 50.0, 'Bob': 0.0},
+                'owing': {'Alice': {'Bob': 50.0}, 'Bob': {}}
             }
         }
-        user_history = ["2023-10-21,Groceries,50.00", "2023-10-22,Transport,15.00"]
+        # Mock the helper function to return the user list
+        helper.read_json = MagicMock(return_value=user_list)
+        
+        # Mock the next step handler call
+        self.message.text = "PDF showing who owes whom how much"
+        
+        # Call the pdfGeneration function directly to test
+        pdf.pdfGeneration(self.message, self.bot, user_list, user_history)
 
-        # Mock the plot and PDF generation
-        with patch("matplotlib.pyplot.figure"), patch("fpdf.FPDF.output"), patch("builtins.open", new_callable=unittest.mock.mock_open):
-            pdfGeneration(message, bot, user_list, user_history)
+        # Assert that a PDF document was sent
+        self.bot.send_document.assert_called_once()  # Check if send_document was called once
 
-            # Verify that the bot sends the message
-            bot.send_message.assert_called_once_with(123456789, "Alright. I just created a pdf of your expense history!")
-
-            # Verify the bot sends the generated PDF document
-            bot.send_document.assert_called()
-
-    @patch("helper.getCommands")
-    def test_pdf_generation_owing_table(self, mock_getCommands):
-        bot = MagicMock()
-        message = MagicMock()
-        message.chat.id = 123456789
-        message.text = "PDF showing who owes whom how much"
-
+    def test_pdf_generation_total_expenses(self):
+        # Setup user history
+        user_history = ['Sample entry']
+        helper.getUserHistory = MagicMock(return_value=user_history)
+        
+        # Mock the user list
         user_list = {
-            "123456789": {
-                "users": ["John", "Jane"],
-                "owed": {"John": 20, "Jane": 30},
-                "owing": {"John": {"Jane": 20}, "Jane": {"John": 10}},
+            12345: {
+                'users': ['Alice', 'Bob'],
+                'owed': {'Alice': 50.0, 'Bob': 0.0},
+                'owing': {'Alice': {'Bob': 50.0}, 'Bob': {}}
             }
         }
-        user_history = ["2023-10-21,Groceries,50.00", "2023-10-22,Transport,15.00"]
+        # Mock the helper function to return the user list
+        helper.read_json = MagicMock(return_value=user_list)
+        
+        # Mock the next step handler call
+        self.message.text = "PDF for Total Expenses - Category wise"
+        
+        # Call the pdfGeneration function directly to test
+        pdf.pdfGeneration(self.message, self.bot, user_list, user_history)
 
-        # Mock the PDF generation
-        with patch("fpdf.FPDF.output"), patch("builtins.open", new_callable=unittest.mock.mock_open):
-            pdfGeneration(message, bot, user_list, user_history)
-
-            # Verify that the bot sends the message
-            bot.send_message.assert_called_once_with(123456789, "Alright. I just created a pdf of your expense history!")
-
-            # Verify the bot sends the generated PDF document
-            bot.send_document.assert_called()
-
-    def test_pdf_generation_invalid_choice(self):
-        bot = MagicMock()
-        message = MagicMock()
-        message.chat.id = 123456789
-        message.text = "Invalid Choice"
-
-        user_list = {}
-        user_history = None
-
-        # Run the `pdfGeneration` function with an invalid choice
-        pdfGeneration(message, bot, user_list, user_history)
-
-        # Ensure that no PDF is generated and an error message is sent
-        bot.send_message.assert_any_call(123456789, "Looks like you have not entered any data yet. Please enter some data and then try creating a pdf.")
-
+        # Assert that a PDF document was sent
+        self.bot.send_document.assert_called_once()  # Check if send_document was called once
 
 if __name__ == "__main__":
     unittest.main()

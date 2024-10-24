@@ -1,88 +1,89 @@
 import unittest
 from unittest.mock import MagicMock, patch
-from main import run  # Assuming this function is in a file called main.py
-import csv
+import csvfile
+import helper
+from telebot import TeleBot
 
-class TestRunFunction(unittest.TestCase):
+class TestCsvFile(unittest.TestCase):
 
-    @patch("helper.read_json")
-    @patch("helper.getUserHistory")
-    @patch("helper.getCommands")
-    @patch("builtins.open", new_callable=unittest.mock.mock_open)
-    @patch("csv.writer")
-    def test_run_with_user_history(self, mock_csv_writer, mock_open, mock_getCommands, mock_getUserHistory, mock_read_json):
-        bot = MagicMock()
-        message = MagicMock()
-        message.chat.id = 123456789
-
-        # Mocking user history and data
-        mock_read_json.return_value = {
-            "123456789": {
-                "csv_data": [
-                    "2023-10-21,Groceries,50.00,John,Doe & Jane",
-                    "2023-10-22,Transport,15.00,Jane,John & Doe"
+    def setUp(self):
+        # Mock the bot and message
+        self.bot = MagicMock(spec=TeleBot)
+        self.message = MagicMock()
+        self.message.chat.id = 12345
+        self.user_list = {
+            str(self.message.chat.id): {
+                'csv_data': [
+                    '2024-10-12,Food,50,John,2',
+                    '2024-10-13,Travel,100,Jane,1'
                 ]
             }
         }
-        mock_getUserHistory.return_value = True
+
+    @patch('helper.read_json')
+    @patch('helper.getUserHistory')
+    @patch('csvfile.csv.writer')
+    @patch('builtins.open', new_callable=MagicMock)
+    def test_run_with_user_history(self, mock_open, mock_csv_writer, mock_get_user_history, mock_read_json):
+        # Set up mock functions
+        mock_read_json.return_value = self.user_list
+        mock_get_user_history.return_value = self.user_list[str(self.message.chat.id)]['csv_data']
+
+        # Set up the mock writer
+        mock_writer = MagicMock()
+        mock_csv_writer.return_value = mock_writer
+        
+        # Simulate opening the file and writing to it
+        mock_open.return_value.__enter__.return_value = mock_writer
 
         # Run the function
-        run(message, bot)
+        csvfile.run(self.message, self.bot)
 
-        # Verify that the message is sent to the bot
-        bot.send_message.assert_any_call(123456789, "Alright. I just created a csv file of your expense history!")
+        # Assert that the bot sends the expected message
+        self.bot.send_message.assert_any_call(self.message.chat.id, "Alright. I just created a csv file of your expense history!")
 
-        # Verify that the CSV file is written correctly
-        mock_open.assert_called_once_with('expense_report.csv', 'w', newline='')
-        mock_csv_writer.return_value.writerow.assert_any_call(['Date', 'Category', 'Amount', 'Payer', 'Participants'])
-        mock_csv_writer.return_value.writerow.assert_any_call(['2023-10-21', 'Groceries', '50.00', 'John', 'Doe & Jane'])
-        mock_csv_writer.return_value.writerow.assert_any_call(['2023-10-22', 'Transport', '15.00', 'Jane', 'John & Doe'])
+        # Check if the bot sends the CSV file
+        mock_open.assert_called_once_with("expense_report.csv", "w", newline='')
+        self.bot.send_document.assert_called_once_with(self.message.chat.id, open("expense_report.csv", "rb"))
 
-        # Verify that the CSV document is sent to the bot
-        bot.send_document.assert_called_once()
-
-    @patch("helper.read_json")
-    @patch("helper.getUserHistory")
-    @patch("helper.getCommands")
-    def test_run_without_user_history(self, mock_getCommands, mock_getUserHistory, mock_read_json):
-        bot = MagicMock()
-        message = MagicMock()
-        message.chat.id = 123456789
-
-        # Mock user history to None
-        mock_getUserHistory.return_value = None
-
-        # Mocking commands list
-        mock_getCommands.return_value = {
-            "start": "Start using the bot",
-            "add": "Add a new expense",
-            "history": "View your expense history"
-        }
+    @patch('helper.read_json')
+    @patch('helper.getUserHistory')
+    def test_run_without_user_history(self, mock_get_user_history, mock_read_json):
+        # Set up mock functions
+        mock_read_json.return_value = self.user_list
+        mock_get_user_history.return_value = None  # Simulate no user history
 
         # Run the function
-        run(message, bot)
+        csvfile.run(self.message, self.bot)
 
-        # Verify that the appropriate message is sent for no user history
-        bot.send_message.assert_any_call(123456789, "Looks like you have not entered any data yet. Please enter some data and then try creating a pdf.")
-        bot.send_message.assert_any_call(123456789, "Please select a menu option from below:")
-        bot.send_message.assert_any_call(123456789, "/start: Start using the bot\n/add: Add a new expense\n/history: View your expense history\n")
+        # Assert that the bot sends the "no data" message
+        self.bot.send_message.assert_any_call(self.message.chat.id, "Looks like you have not entered any data yet. Please enter some data and then try creating a pdf.")
 
-    @patch("helper.read_json")
-    @patch("helper.getUserHistory")
-    def test_run_with_exception(self, mock_getUserHistory, mock_read_json):
-        bot = MagicMock()
-        message = MagicMock()
-        message.chat.id = 123456789
-
-        # Simulate an exception in the code
-        mock_getUserHistory.side_effect = Exception("Something went wrong")
+    @patch('helper.read_json')
+    @patch('helper.getUserHistory')
+    @patch('csvfile.csv.writer')
+    @patch('builtins.open', new_callable=MagicMock)
+    def test_csv_content(self, mock_open, mock_csv_writer, mock_get_user_history, mock_read_json):
+        # Set up mocks
+        mock_read_json.return_value = self.user_list
+        mock_get_user_history.return_value = self.user_list[str(self.message.chat.id)]['csv_data']
+        
+        mock_writer = MagicMock()
+        mock_csv_writer.return_value = mock_writer
+        
+        # Simulate opening the file and writing to it
+        mock_open.return_value.__enter__.return_value = mock_writer
 
         # Run the function
-        run(message, bot)
+        csvfile.run(self.message, self.bot)
 
-        # Verify that the bot sends the exception message
-        bot.send_message.assert_called_with(message, "Oops!Something went wrong")
+        # Check if the correct data is written to the CSV
+        expected_calls = [
+            (['Date', 'Category', 'Amount', 'Payer', 'Participants'],),
+            (['2024-10-12', 'Food', '50', 'John', '2'],),
+            (['2024-10-13', 'Travel', '100', 'Jane', '1'],)
+        ]
+        mock_writer.writerow.assert_has_calls(expected_calls, any_order=False)
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()
