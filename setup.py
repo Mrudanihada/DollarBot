@@ -1,9 +1,9 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='Track My Dollar',
-    version='1.0',
+    name='Dollar Bot',
+    version='3.0',
     description='An easy to use Telegram Bot to track everyday expenses',
-    author='Dev, Prakruthi, Radhika, Rohan, Sunidhi',
+    author='Mrudani Hada, Parth Parikh, Jamnesh Patel',
     packages=find_packages()
 )
