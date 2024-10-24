@@ -51,26 +51,33 @@ monthFormat = variables_data["variables"]["monthFormat"]
 
 # function to load .json expense record data
 def read_json():
+    """
+    read_json(): Function to load .json expense record data
+    """
     try:
-        if not os.path.exists('expense_record.json'):
-            with open('expense_record.json', 'w') as json_file:
-                json_file.write('{}')
-            return json.dumps('{}')
-        elif os.stat('expense_record.json').st_size != 0:
-            with open('expense_record.json') as expense_record:
+        if not os.path.exists("expense_record.json"):
+            with open("expense_record.json", "w") as json_file:
+                json_file.write("{}")
+            return json.dumps("{}")
+        elif os.stat("expense_record.json").st_size != 0:
+            with open("expense_record.json") as expense_record:
                 expense_record_data = json.load(expense_record)
             return expense_record_data
 
     except FileNotFoundError:
         print("---------NO RECORDS FOUND---------")
 
-# function to write the expense record
+
 def write_json(user_list):
+    """
+    write_json(user_list): Stores data into the datastore of the bot.
+    """
     try:
-        with open('expense_record.json', 'w') as json_file:
+        with open("expense_record.json", "w") as json_file:
             json.dump(user_list, json_file, ensure_ascii=False, indent=4)
     except FileNotFoundError:
-        print('Sorry, the data file could not be found.')
+        print("Sorry, the data file could not be found.")
+
 
 # function to validate the entered amount
 def validate_entered_amount(amount_entered):
