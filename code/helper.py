@@ -207,6 +207,14 @@ def getSpendEstimateOptions():
 def getCommands():
     return commands
 
+def calculate_total_spendings(queryResult):
+    total = 0
+
+    for row in queryResult:
+        s = row.split(",")
+        total = total + float(s[2])
+    return total
+    
 # function to fetch date format
 def getDateFormat():
     return dateFormat
