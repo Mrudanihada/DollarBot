@@ -142,6 +142,15 @@ def validate_entered_amount(amount_entered):
             return str(amount)
     return 0
 
+def getUserHistory(chat_id):
+    """
+    getUserHistory(chat_id): Takes 1 argument chat_id and uses this to get the relevant user's historical data.
+    """
+    data = getUserData(chat_id)
+    if data is not None:
+        return data["data"]
+    return None
+
 #function to validate the entered time
 def validate_time_format(time_str):
     # Use a regular expression to match the time format HH:MM
