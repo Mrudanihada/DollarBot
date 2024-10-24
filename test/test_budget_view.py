@@ -76,7 +76,7 @@ def test_run_failing_case(mock_telebot, mocker):
     budget_view.helper.isOverallBudgetAvailable.return_value = False
     budget_view.helper.throw_exception.return_value = True
 
-    message = create_message("hello from testing")
+    message = create_message("Hello from Testing")
     budget_view.run(mc, message)
     assert budget_view.helper.throw_exception.called
 
