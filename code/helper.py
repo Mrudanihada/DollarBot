@@ -29,27 +29,74 @@ import json
 import os
 from datetime import datetime
 
-with open('variables.json') as variables:
-    variables_data = json.load(variables)
+from notify import notify
+spend_categories = [
+    "Food",
+    "Groceries",
+    "Utilities",
+    "Transport",
+    "Shopping",
+    "Miscellaneous",
+]
+choices = ["Date", "Category", "Cost"]
+spend_display_option = ["Day", "Month"]
+spend_estimate_option = ["Next day", "Next month"]
+update_options = {"continue": "Continue", "exit": "Exit"}
 
-spend_categories = variables_data["variables"]["spend_categories"]
-account_categories = variables_data["variables"]["account_categories"]
-currencies = variables_data["variables"]["currencies"]
-choices = variables_data["variables"]["choices"]
-plot = variables_data["variables"]["plot"]
-spend_display_option = variables_data["variables"]["spend_display_option"]
-spend_estimate_option = variables_data["variables"]["spend_estimate_option"]
-update_options = variables_data["variables"]["update_options"]
-budget_options = variables_data["variables"]["budget_options"]
-budget_types = variables_data["variables"]["budget_types"]
-data_format = variables_data["variables"]["data_format"]
-category_options = variables_data["variables"]["category_options"]
-commands = variables_data["variables"]["commands"]
-dateFormat = variables_data["variables"]["dateFormat"]
-timeFormat = variables_data["variables"]["timeFormat"]
-monthFormat = variables_data["variables"]["monthFormat"]
+budget_options = {"add":"Add","update": "Update", "view": "View", "delete": "Delete"}
+
+budget_types = {"overall": "Overall Budget", "category": "Category-Wise Budget"}
+
+data_format = {"users":[],"owed":{},"owing":{},"data": [],"csv_data":[], 
+    "budget": {"overall": '0', "category": {"Food": '0',
+                                            "Groceries": '0',
+                                            "Utilities": '0',
+                                            "Transport": '0',
+                                            "Shopping": '0',
+                                            "Miscellaneous": '0'}
+                }
+}
+
+# set of implemented commands and their description
+commands = {
+    "help": "Display the list of commands.",
+    "pdf": "Save history as PDF.",
+    "csv": "Save history as a cv file.",
+    "add_user": "Add users to expense tracker",
+    "delete_user":"Delete user from the registered users",
+    "add": "This option is for adding your expenses \
+       \n 1. It will give you the list of categories to choose from. \
+       \n 2. You will be prompted to enter the amount corresponding to your spending \
+       \n 3.The message will be prompted to notify the addition of your expense with the amount,date, time and category ",
+    "add_category": "This option is for adding new category \
+       \n 1. You will be prompted to enter a new category \
+       \n 2.The message will be prompted to notify the addition of your category ",
+
+    "display": "This option gives user a graphical representation(bar graph) of their expenditures \
+        \n You will get an option to choose from day or month for better analysis of the expenses.",
+    "estimate": "This option gives you the estimate of expenditure for the next day/month. It calcuates based on your recorded spendings",
+    "history": "This option is to give you the detailed summary of your expenditure with Date, time ,category and amount. A quick lookup into your spendings",
+    "delete": "This option is to Clear/Erase all your records",
+    "delete_expense": "This option is to Clear/Erase individual record from expense history records.",
+    "send_mail": "This option is to send mail of calculate owings",
+    "edit": "This option helps you to go back and correct/update the missing details \
+        \n 1. It will give you the list of your expenses you wish to edit \
+        \n 2. It will let you change the specific field based on your requirements like amount/date/category",
+    "budget": "This option is to set/update/delete the budget. \
+        \n 1. The Add/update category is to set the new budget or update the existing budget \
+        \n 2. The view category gives the detail if budget is exceeding or in limit with the difference amount \
+        \n 3. The delete category allows to delete the budget and start afresh!  ",
+}
+
+dateFormat = "%d-%b-%Y"
+timeFormat = "%H:%M"
+monthFormat = "%b-%Y"
+
+# === Documentation of helper.py ===
 
 # function to load .json expense record data
+
+
 def read_json():
     """
     read_json(): Function to load .json expense record data
