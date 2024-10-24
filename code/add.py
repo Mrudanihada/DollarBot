@@ -1,171 +1,195 @@
-"""
-
-MIT License
-
-Copyright (c) 2021 Dev Kumar
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-"""
-
 import helper
 import logging
 from telebot import types
 from datetime import datetime
-from forex_python.converter import CurrencyRates
-import pytest
+
 
 option = {}
-currencies = CurrencyRates(force_decimal = False)
 
-# Main run function
+
 def run(message, bot):
-    helper.read_json()
+    """
+    run(message, bot): This is the main function used to implement the add feature.
+    It pop ups a menu on the bot asking the user to choose their expense category,
+    after which control is given to post_category_selection(message, bot) for further proccessing.
+    It takes 2 arguments for processing - message which is the message from the user,
+    and bot which is the telegram bot object from the main code.py function.
+    """
+    user_list=helper.read_json()
     chat_id = message.chat.id
-    option.pop(chat_id, None)  # remove temp choice
+    owed_by =[]
+    # option.pop(chat_id, None)  # remove temp choice
+
+    if str(chat_id) not in user_list:
+        user_list[str(chat_id)] = helper.createNewUserRecord(message)
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+    markup.row_width = len(user_list[str(chat_id)]["users"])
+    for c in user_list[str(chat_id)]["users"]:
+        markup.add(c)
+    m = bot.send_message(chat_id, "Select who paid for the Expense",reply_markup=markup)
+    bot.register_next_step_handler(m, select_user, bot,owed_by,user_list,None)
+
+
+def select_user(message,bot,owed_by,user_list,paid_by):
+    chat_id = message.chat.id
+    text_m = message.text
+    remaining_users = [item for item in user_list[str(chat_id)]["users"] if item not in owed_by]
+    if len(remaining_users)==0:
+        post_append_spend(message,bot,owed_by,user_list,paid_by)
+    else:
+        if text_m in user_list[str(chat_id)]["users"]:
+            paid_by = text_m
+        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+        markup.row_width = 2
+
+        for c in remaining_users:
+            markup.add(c)
+        m = bot.send_message(chat_id, "Select who shares the Expense",reply_markup=markup)
+        bot.register_next_step_handler(m, add_shared_user, bot,owed_by,user_list,paid_by)
+
+def add_shared_user(message,bot,owed_by,user_list,paid_by):
+    chat_id = message.chat.id
+    user = message.text
+    if user in user_list[str(chat_id)]["users"]:
+        owed_by.append(user)
+    else:
+        pass
+    choice = bot.reply_to(message, "Do you want to add more user to share the expense? Y/N")
+    bot.register_next_step_handler(choice, user_choice, bot, owed_by,user_list,paid_by)
+    
+def user_choice(message, bot,owed_by, user_list,paid_by):
+    Choice = message.text
+    if Choice == "Y" or Choice == 'y':
+        select_user(message,bot,owed_by,user_list,paid_by)
+    elif Choice == "N" or Choice == 'n':
+        post_append_spend(message,bot,owed_by,user_list,paid_by)
+
+
+
+def post_append_spend(message, bot,owed_by,user_list,paid_by):
+    chat_id = message.chat.id
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
     markup.row_width = 2
-    print("Categories:")
+    m = bot.send_message(chat_id, "Select a category")
     for c in helper.getSpendCategories():
-        print("\t", c)
         markup.add(c)
-    msg = bot.reply_to(message, 'Select Category', reply_markup = markup)
-    bot.register_next_step_handler(msg, post_category_selection, bot)
+    msg = bot.reply_to(message, "Select Category", reply_markup=markup)
+    bot.register_next_step_handler(msg, post_category_selection, bot,owed_by,paid_by,user_list)
 
-# Contains step to run after the category is selected
-def post_category_selection(message, bot):
+
+def post_category_selection(message, bot,owed_by,paid_by,user_list):
+    """
+    post_category_selection(message, bot): It takes 2 arguments for processing -
+    message which is the message from the user, and bot which is the telegram bot object
+    from the run(message, bot): function in the add.py file. It requests the user 
+    to enter the amount they have spent on the expense category chosen and then passes
+    control to post_amount_input(message, bot): for further processing.
+    """
     try:
         chat_id = message.chat.id
         selected_category = message.text
         if selected_category not in helper.getSpendCategories():
-            bot.send_message(chat_id, 'Invalid', reply_markup=types.ReplyKeyboardRemove())
-            raise Exception("Sorry I don't recognize this category \"{}\"!".format(selected_category))
+            bot.send_message(
+                chat_id, "Invalid", reply_markup=types.ReplyKeyboardRemove()
+            )
+            raise Exception(
+                'Sorry I don\'t recognise this category "{}"!'.format(selected_category)
+            )
 
         option[chat_id] = selected_category
-        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-        markup.row_width = 2
-        print("Currencies:")
-        for c in helper.getCurrencies():
-            print("\t", c)
-            markup.add(c)
-        msg = bot.reply_to(message, 'Select Currency', reply_markup = markup)
-        bot.register_next_step_handler(msg, post_currency_selection, bot, selected_category)
+        message = bot.send_message(
+            chat_id,
+            "How much did you spend on {}? \n(Enter numeric values only)".format(
+                str(option[chat_id])
+            ),
+        )
+        bot.register_next_step_handler(
+            message, post_amount_input, bot, selected_category,owed_by,paid_by,user_list
+        )
     except Exception as e:
         logging.exception(str(e))
-        bot.reply_to(message, 'Oh no! ' + str(e))
+        bot.reply_to(message, "Oh no! " + str(e))
         display_text = ""
         commands = helper.getCommands()
-        for c in commands:  # generate help text out of the commands dictionary defined at the top
+        for (
+            c
+        ) in (
+            commands
+        ):  # generate help text out of the commands dictionary defined at the top
             display_text += "/" + c + ": "
             display_text += commands[c] + "\n"
-        bot.send_message(chat_id, 'Please select a menu option from below:')
+        bot.send_message(chat_id, "Please select a menu option from below:")
         bot.send_message(chat_id, display_text)
 
-# Contains step to run after the currency is selected
-def post_currency_selection(message, bot, selected_category):
-    try:
-        chat_id = message.chat.id
-        selected_currency = message.text
-        if selected_currency not in helper.getCurrencies():
-            bot.send_message(chat_id, 'Invalid', reply_markup=types.ReplyKeyboardRemove())
-            raise Exception("Sorry I don't recognize this currency \"{}\"!".format(selected_currency))
 
-        message = bot.send_message(chat_id, 'How much did you spend on {}? \n(Enter numeric values only)'.format(str(option[chat_id])))
-        bot.register_next_step_handler(message, post_amount_input, bot, selected_category, selected_currency)
-    except Exception as e:
-        logging.exception(str(e))
-        bot.reply_to(message, 'Oh no! ' + str(e))
-        display_text = ""
-        commands = helper.getCommands()
-        for c in commands:  # generate help text out of the commands dictionary defined at the top
-            display_text += "/" + c + ": "
-            display_text += commands[c] + "\n"
-        bot.send_message(chat_id, 'Please select a menu option from below:')
-        bot.send_message(chat_id, display_text)
-
-# Contains step to run after the amount is inserted
-def post_amount_input(message, bot, selected_category, selected_currency):
+def post_amount_input(message, bot, selected_category,owed_by,paid_by,user_list):
+    """
+    post_amount_input(message, bot): It takes 2 arguments for processing -
+    message which is the message from the user, and bot which is the telegram bot
+    object from the post_category_selection(message, bot): function in the add.py file.
+    It takes the amount entered by the user, validates it with helper.validate() and then
+    calls add_user_record to store it.
+    """
     try:
         chat_id = message.chat.id
         amount_entered = message.text
         amount_value = helper.validate_entered_amount(amount_entered)  # validate
-        amount_value = currencies.convert(selected_currency,'USD',float(amount_value))
-        amount_value = str(round(float(amount_value), 2))
-        if float(amount_value) == 0:  # cannot be $0 spending
+        if amount_value == 0:  # cannot be $0 spending
             raise Exception("Spent amount has to be a non-zero number.")
 
-        acc_type = helper.get_account_type(message)
-        acc_balance = helper.get_account_balance(message, "", acc_type)
+        date_of_entry = datetime.today().strftime(
+            helper.getDateFormat() + " " + helper.getTimeFormat()
+        )
 
-        if is_Valid_expense(message, float(amount_value)) == False:
-            raise Exception("Expenses exceed balance in {} account. Current Balance is {}.".format(acc_type, acc_balance))
+        date_str, category_str, amount_str = (
+            str(date_of_entry),
+            str(option[chat_id]),
+            str(amount_value),
+        )
 
-        helper.write_json(update_balance(message, amount_value))
-        date_of_entry = datetime.today().strftime(helper.getDateFormat() + ' ' + helper.getTimeFormat())
-        date_str, category_str, amount_str = str(date_of_entry), str(option[chat_id]), str(amount_value)
-        helper.write_json(add_user_record(chat_id, "{},{},{},{} Account".format(date_str, category_str, amount_str, acc_type)))
-        helper.write_json(add_user_balance_record(chat_id, "{}.{}.Outflow {}".format(date_str, acc_type, amount_value)))
-        bot.send_message(chat_id, 'The following expenditure has been recorded: You have spent ${} for {} on {} from {} account'.format(amount_str, category_str, date_str, acc_type))
+        helper.write_json(
+            add_user_record(
+                user_list,message,chat_id, "{},{},{}".format(date_str, category_str, amount_str),amount_value,owed_by,paid_by
+            )
+        )
 
-
-        if (helper.get_account_balance(message, "", acc_type) < 100):
-            bot.send_message(chat_id, 'ALERT: Balance in {} account is less than 100$'.format(acc_type))
-
-        helper.display_remaining_budget(message, bot, selected_category)
+        bot.send_message(
+            chat_id,
+            "The following expenditure has been recorded: You have spent ${} for {} on {}".format(
+                amount_str, category_str, date_str
+            ),
+        )
     except Exception as e:
         logging.exception(str(e))
-        bot.reply_to(message, 'Oh no. ' + str(e))
+        bot.reply_to(message, "Oh no. " + str(e))
 
 
-# By default, we will use checkings account.
-# Only if there was a previous configuration of account change to savings, we will use that.
-def is_Valid_expense(message, amount):
-    acc_type = helper.get_account_type(message)
-
-    if (float(helper.get_account_balance(message, "", acc_type)) < amount):
-        return False
+def add_user_record(user_list,message,chat_id, record_to_be_added,amount_value,owed_by, paid_by):
+    """
+    add_user_record(chat_id, record_to_be_added): Takes 2 arguments -
+    chat_id or the chat_id of the user's chat, and record_to_be_added which
+    is the expense record to be added to the store. It then stores this expense record in the store.
+    """
+    if str(chat_id) not in user_list:
+        user_list[str(chat_id)] = helper.createNewUserRecord(message)
+    owed_amount = float(amount_value)/len(set(owed_by))
+    if "data" in user_list[str(chat_id)]:
+        user_list[str(chat_id)]["data"].append(record_to_be_added)
     else:
-        return True
-
-def update_balance(message, amount):
-    cur_balance = float(helper.get_account_balance(message, "", helper.get_account_type(message)))
-    cur_balance -= float(amount)
-
-    acc_type = helper.get_account_type(message)
-
-    user_list = helper.read_json()
-    user_list[str(message.chat.id)]["balance"][acc_type] = str(cur_balance)
+        user_list[str(chat_id)]["data"] = [record_to_be_added]
+    user_list[str(chat_id)]["owed"][paid_by] += float(amount_value)
+    for user in set(owed_by):
+        if user == paid_by:
+            user_list[str(chat_id)]["owed"][paid_by] -= owed_amount
+        elif paid_by in user_list[str(chat_id)]["owing"][user].keys():
+            user_list[str(chat_id)]["owing"][user][paid_by] += owed_amount
+        else:
+            user_list[str(chat_id)]["owing"][user][paid_by] = owed_amount
+    record_to_be_added+=",{},{}".format(paid_by,' & '.join(owed_by))
+    if "csv_data" in user_list[str(chat_id)]:
+        user_list[str(chat_id)]["csv_data"].append(record_to_be_added)
+    else:
+        user_list[str(chat_id)]["csv_data"] = [record_to_be_added]
     return user_list
 
-# Contains step to on user record addition
-def add_user_record(chat_id, record_to_be_added):
-    user_list = helper.read_json()
-    if str(chat_id) not in user_list:
-        user_list[str(chat_id)] = helper.createNewUserRecord()
 
-    user_list[str(chat_id)]['data'].append(record_to_be_added)
-    return user_list
-
-def add_user_balance_record(chat_id, record_to_be_added):
-    user_list = helper.read_json()
-    if str(chat_id) not in user_list:
-        user_list[str(chat_id)] = helper.createNewUserRecord()
-
-    user_list[str(chat_id)]['balance_data'].append(record_to_be_added)
-    return user_list
