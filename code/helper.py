@@ -128,9 +128,15 @@ def write_json(user_list):
 
 # function to validate the entered amount
 def validate_entered_amount(amount_entered):
+    """
+    validate_entered_amount(amount_entered): Takes 1 argument, amount_entered.
+    It validates this amount's format to see if it has been correctly entered by the user.
+    """
     if amount_entered is None:
         return 0
-    if re.match("^[1-9][0-9]{0,14}\\.[0-9]*$", amount_entered) or re.match("^[1-9][0-9]{0,14}$", amount_entered):
+    if re.match("^[1-9][0-9]{0,14}\\.[0-9]*$", amount_entered) or re.match(
+        "^[1-9][0-9]{0,14}$", amount_entered
+    ):
         amount = round(float(amount_entered), 2)
         if amount > 0:
             return str(amount)
