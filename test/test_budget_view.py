@@ -62,7 +62,7 @@ def test_run_category_budget(mock_telebot, mocker):
 
     budget_view.display_category_budget = mock.Mock(return_value=True)
 
-    message = create_message("hello from testing")
+    message = create_message("Hello from Testing")
     budget_view.run(mc, message)
     assert budget_view.display_category_budget.called
 
