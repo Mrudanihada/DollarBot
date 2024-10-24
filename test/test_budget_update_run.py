@@ -42,7 +42,7 @@ def test_run_overall_budget_new_budget_case(mock_telebot, mocker):
     budget_update.helper.isOverallBudgetAvailable.return_value = False
     budget_update.helper.isCategoryBudgetAvailable.return_value = False
 
-    message = create_message("hello from testing")
+    message = create_message("Hello from Testing")
     budget_update.run(message, mc)
 
     assert mc.reply_to.called
