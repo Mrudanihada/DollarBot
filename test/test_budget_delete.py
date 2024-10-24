@@ -14,7 +14,7 @@ def test_run_normal_case(mock_telebot, mocker):
     }
     budget_delete.helper.write_json.return_value = True
 
-    message = create_message("hello from testing")
+    message = create_message("Hello from testing")
     budget_delete.run(message, mc)
 
     # assert(mc.reply_to.called)
