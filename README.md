@@ -27,7 +27,9 @@
 
 DollarBot is an easy-to-use Telegram bot that assists you in recording and managing daily expenses on a local system without any hassle with simple commands. 
 
-[[Link to animated video]](https://www.canva.com/design/DAF1bJpmHtM/EGubjQOePxySaFfDb0sJMg/watch?utm_content=DAF1bJpmHtM&utm_campaign=designshare&utm_medium=link&utm_source=editor) 
+https://github.com/user-attachments/assets/21630555-7d0d-4e63-871a-c140cb242c51
+
+
 
 This bot has following functionalities:
 
