@@ -1,4 +1,5 @@
 import pytest
+import helper
 from unittest.mock import patch
 from telebot import types
 from datetime import datetime
@@ -138,4 +139,25 @@ def create_user_list():
                   '11': {'users': ['User1', 'User1', 'User2', 'User3', 'User4'], 'owed': {'User1': 57.5, 'User2': 0, 'User3': 0, 'User4': 0}, 
                          'owing': {'User1': {}, 'User2': {'User1': 22.5}, 'User3': {'User1': 12.5}, 'User4': {'User1': 22.5}}, 
                         'data': ['24-Oct-2024 10:55,Utilities,20.0', '24-Oct-2024 10:55,Transport,50.0', '25-Oct-2024 23:54,Food,30.0'], 'csv_data': ['25-Oct-2024 13:16,Utilities,20.0,Sho,User1', '24-Oct-2023 13:23,Transport,50.0,Parth,Mrudani & Jamnesh & Aagam & User4', '18-Oct-2024 23:54,Food,30.0,Parth,Mrudani & Parth & User4'], 'budget': {'overall': '0', 'category': {'Food': '0', 'Groceries': '0', 'Utilities': '0', 'Transport': '0', 'Shopping': '0', 'Miscellaneous': '0'}}}}
+
+
+def test_run_new_user():
+    # Set up the bot and message objects
+    bot = MagicMock()
+    message = MagicMock()
+    message.chat.id = 12345
+    message.text = "Test User"
+    
+    # Mock helper functions
+    helper.read_json = MagicMock(return_value={})  # No existing users
+    helper.createNewUserRecord = MagicMock(return_value={"users": ["User1", "User2"]})
+
+    # Call the function
+    run(message, bot)
+    
+    # Check if the correct message was sent to the user
+    bot.send_message.assert_called_with(12345, "Select who paid for the Expense", reply_markup=MagicMock())
+
+    # Check if new user record was created
+    helper.createNewUserRecord.assert_called_with(message)
 
