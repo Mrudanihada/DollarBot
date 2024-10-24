@@ -180,6 +180,29 @@ def getUserHistory(chat_id):
         return data['data']
     return None
 
+def display_remaining_budget(message, bot, cat):
+    print("inside")
+    chat_id = message.chat.id
+    if isOverallBudgetAvailable(chat_id):
+        display_remaining_overall_budget(message, bot)
+    elif isCategoryBudgetByCategoryAvailable(chat_id, cat):
+        display_remaining_category_budget(message, bot, cat)
+
+
+def display_remaining_overall_budget(message, bot):
+    print("here")
+    chat_id = message.chat.id
+    remaining_budget = calculateRemainingOverallBudget(chat_id)
+    print("here", remaining_budget)
+    if remaining_budget >= 0:
+        msg = "\nRemaining Overall Budget is $" + str(remaining_budget)
+    else:
+        msg = (
+            "\nBudget Exceded!\nExpenditure exceeds the budget by $" + str(remaining_budget)[1:]
+        )
+        # notify()
+    bot.send_message(chat_id, msg)
+
 # function to get user data
 def getUserData(chat_id):
     user_list = read_json()
