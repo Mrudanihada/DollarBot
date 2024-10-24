@@ -190,6 +190,16 @@ def command_add(message):
 def command_add_user(message):
     add_user.register_people(message,bot,user_list)
 
+@bot.message_handler(commands=["delete"])
+def command_delete(message):
+    """
+    command_delete(message): Takes 1 argument message which contains the 
+    message from the user along with the chat ID of the user chat. It then
+    calls delete.py to run to execute the add functionality.
+    Commands used to run this: commands=['display']
+    """
+    delete.run(message, bot)
+
 @bot.message_handler(commands=["delete_user"])
 def command_delete_user(message):
     # Call the delete_user function from the delete_user module
