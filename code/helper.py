@@ -191,17 +191,137 @@ def getCategoryBudget(chatId):
         return data["budget"]["category"]
     return None
 
-# function to get plot
-def getplot():
-    return plot
 
-# function to display spend options
+
+def getCategoryBudgetByCategory(chatId, cat):
+    if not isCategoryBudgetByCategoryAvailable(chatId, cat):
+        return None
+    data = getCategoryBudget(chatId)
+    return data[cat]
+
+
+def canAddBudget(chatId):
+    return (getOverallBudget(chatId) is None) and (getCategoryBudget(chatId) is None)
+
+
+def isOverallBudgetAvailable(chatId):
+    return getOverallBudget(chatId) is not None
+
+
+def isCategoryBudgetAvailable(chatId):
+    return getCategoryBudget(chatId) is not None
+
+
+def isCategoryBudgetByCategoryAvailable(chatId, cat):
+    data = getCategoryBudget(chatId)
+    if data is None:
+        return False
+    return cat in data.keys()
+
+
+def display_remaining_budget(message, bot, cat):
+    print("inside")
+    chat_id = message.chat.id
+    if isOverallBudgetAvailable(chat_id):
+        display_remaining_overall_budget(message, bot)
+    elif isCategoryBudgetByCategoryAvailable(chat_id, cat):
+        display_remaining_category_budget(message, bot, cat)
+
+
+def display_remaining_overall_budget(message, bot):
+    print("here")
+    chat_id = message.chat.id
+    remaining_budget = calculateRemainingOverallBudget(chat_id)
+    print("here", remaining_budget)
+    if remaining_budget >= 0:
+        msg = "\nRemaining Overall Budget is $" + str(remaining_budget)
+    else:
+        msg = (
+            "\nBudget Exceded!\nExpenditure exceeds the budget by $" + str(remaining_budget)[1:]
+        )
+        # notify()
+    bot.send_message(chat_id, msg)
+
+
+def calculateRemainingOverallBudget(chat_id):
+    budget = getOverallBudget(chat_id)
+    history = getUserHistory(chat_id)
+    query = datetime.now().today().strftime(getMonthFormat())
+    queryResult = [value for index, value in enumerate(history) if str(query) in value]
+
+    return float(budget) - calculate_total_spendings(queryResult)
+
+
+def calculate_total_spendings(queryResult):
+    total = 0
+
+    for row in queryResult:
+        s = row.split(",")
+        total = total + float(s[2])
+    return total
+
+def calculate_owing(user_list,chat_id):
+    owing_dict = {}
+    users = user_list[str(chat_id)]["users"]
+    for user in users:
+        owing_dict[user] = {"owes" : [], "owing":[]}
+        for k,v in user_list[str(chat_id)]["owing"][user].items():
+            if k in owing_dict.keys():
+                owing_dict[k]["owing"].append(str(user)+' owes '+str(k)+" an amout of "+"{:.2f}".format(v))
+                owing_dict[user]["owes"].append(str(k)+' is owing from '+str(user)+" an amout of "+"{:.2f}".format(v))
+
+            else:
+                owing_dict[k] ={"owes" :[str(k)+' is owing from '+str(user)+" an amout of "+"{:.2f}".format(v)],"owing" :[str(user)+' owes '+str(k)+" an amout of "+"{:.2f}".format(v)]}
+
+    return owing_dict
+
+
+
+
+def display_remaining_category_budget(message, bot, cat):
+    chat_id = message.chat.id
+    remaining_budget = calculateRemainingCategoryBudget(chat_id, cat)
+    if remaining_budget >= 0:
+        msg = "\nRemaining Budget for " + cat + " is $" + str(remaining_budget)
+    else:
+        rem_amount = ""
+        rem_amount = str(abs(remaining_budget))
+        notify(chat_id, cat, rem_amount)
+        msg = "\nRemaining Budget for " + cat + " is $" + str(remaining_budget)
+    bot.send_message(chat_id, msg)
+
+
+def calculateRemainingCategoryBudget(chat_id, cat):
+    budget = getCategoryBudgetByCategory(chat_id, cat)
+    history = getUserHistory(chat_id)
+    query = datetime.now().today().strftime(getMonthFormat())
+    queryResult = [value for index, value in enumerate(history) if str(query) in value]
+
+    return float(budget) - calculate_total_spendings_for_category(queryResult, cat)
+
+
+def calculate_total_spendings_for_category(queryResult, cat):
+    total = 0
+
+    for row in queryResult:
+        s = row.split(",")
+        if cat == s[1]:
+            total = total + float(s[2])
+    return total
+
+
+def getSpendCategories():
+    """
+    getSpendCategories(): This functions returns the spend categories used in the bot. These are defined the same file.
+    """
+    return spend_categories
+
+
 def getSpendDisplayOptions():
+    """
+    getSpendDisplayOptions(): This functions returns the spend display options used in the bot. These are defined the same file.
+    """
     return spend_display_option
-
-# function to get spend estimations
-def getSpendEstimateOptions():
-    return spend_estimate_option
 
 # function to fetch commands
 def getCommands():
