@@ -23,13 +23,13 @@ def test_display_category_budget(mock_telebot, mocker):
     mc.send_message.return_value = True
     mocker.patch.object(budget_view, "helper")
     dummy_categ_val = {
-        "Food": 10.0,
-        "Transport": 50.0,
-        "Shopping": 148.0,
-        "Miscellaneous": 47.93,
-        "Miscellaneous": 47.93,
-        "Utilities": 200.0,
-        "Groceries": 55.21,
+        "Food": 20.0,
+        "Transport": 70.0,
+        "Shopping": 168.0,
+        "Miscellaneous": 58.93,
+        "Miscellaneous": 80.93,
+        "Utilities": 300.0,
+        "Groceries": 65.21,
     }
     budget_view.helper.getCategoryBudget.return_value = dummy_categ_val
     message = create_message("hello from testing")
