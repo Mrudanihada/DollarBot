@@ -46,7 +46,7 @@ def test_run_overall_budget(mock_telebot, mocker):
     budget_view.helper.isOverallBudgetAvailable.return_value = True
 
     budget_view.display_overall_budget = mock.Mock(return_value=True)
-    message = create_message("hello from testing")
+    message = create_message("Hello from Testing")
     budget_view.run(mc, message)
 
     assert budget_view.display_overall_budget.called
