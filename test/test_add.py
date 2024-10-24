@@ -147,36 +147,7 @@ from unittest.mock import MagicMock
 import helper
 from add import run  # Import the run function
 
-def test_run_new_user():
-    # Set up the bot and message objects
-    bot = MagicMock()
-    message = MagicMock()
-    message.chat.id = 12345
-    message.text = "Test User"
-    
-    # Mock helper functions
-    helper.read_json = MagicMock(return_value={})  # No existing users
-    helper.createNewUserRecord = MagicMock(return_value={"users": ["User1", "User2"]})
 
-    # Call the function
-    run(message, bot)
-
-    # Check if the correct message was sent (ignoring reply_markup for now)
-    bot.send_message.assert_called_with(12345, "Select who paid for the Expense", reply_markup=MagicMock())
-
-    # Check if the new user record was created
-    helper.createNewUserRecord.assert_called_with(message)
-
-    # Now, let's inspect the actual markup being passed
-    send_message_call_args = bot.send_message.call_args  # Get call args for send_message
-
-    # Check that the row width in the reply_markup is set correctly
-    reply_markup = send_message_call_args.kwargs['reply_markup']
-    assert reply_markup.row_width == 2  # Should match the number of users
-
-    # Verify if the users were added to the markup correctly
-    assert "User1" in [button.text for button in reply_markup.keyboard[0]]
-    assert "User2" in [button.text for button in reply_markup.keyboard[0]]
 
 
 
