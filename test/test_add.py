@@ -5,7 +5,7 @@ from telebot import types
 from datetime import datetime
 from code import add
 from unittest.mock import MagicMock
-
+from add import run
 
 
 dateFormat = "%d-%b-%Y"
@@ -143,27 +143,40 @@ def create_user_list():
                         'data': ['24-Oct-2024 10:55,Utilities,20.0', '24-Oct-2024 10:55,Transport,50.0', '25-Oct-2024 23:54,Food,30.0'], 'csv_data': ['25-Oct-2024 13:16,Utilities,20.0,Sho,User1', '24-Oct-2023 13:23,Transport,50.0,Parth,Mrudani & Jamnesh & Aagam & User4', '18-Oct-2024 23:54,Food,30.0,Parth,Mrudani & Parth & User4'], 'budget': {'overall': '0', 'category': {'Food': '0', 'Groceries': '0', 'Utilities': '0', 'Transport': '0', 'Shopping': '0', 'Miscellaneous': '0'}}}}
 
 
+from unittest.mock import MagicMock
+import helper
+from add import run  # Import the run function
+
 def test_run_new_user():
     # Set up the bot and message objects
-    bot = MagicMock()  # Mock the bot
-    message = MagicMock()  # Mock the message object
-    message.chat.id = 12345  # Set the chat id for testing
-    message.text = "Test User"  # Simulate a user message
-
-    # Mock the helper functions
-    helper.read_json = MagicMock(return_value={})  # Simulate no users in the list
+    bot = MagicMock()
+    message = MagicMock()
+    message.chat.id = 12345
+    message.text = "Test User"
+    
+    # Mock helper functions
+    helper.read_json = MagicMock(return_value={})  # No existing users
     helper.createNewUserRecord = MagicMock(return_value={"users": ["User1", "User2"]})
 
-    # Call the function you are testing
+    # Call the function
     run(message, bot)
 
-    # Ensure the message was sent to the correct chat with the expected text
+    # Check if the correct message was sent (ignoring reply_markup for now)
     bot.send_message.assert_called_with(12345, "Select who paid for the Expense", reply_markup=MagicMock())
 
-    # Ensure a new user record was created using the helper method
+    # Check if the new user record was created
     helper.createNewUserRecord.assert_called_with(message)
 
-    # Ensure the markup row width is correct based on users
-    assert bot.send_message.call_args[1]["reply_markup"].row_width == 2
+    # Now, let's inspect the actual markup being passed
+    send_message_call_args = bot.send_message.call_args  # Get call args for send_message
+
+    # Check that the row width in the reply_markup is set correctly
+    reply_markup = send_message_call_args.kwargs['reply_markup']
+    assert reply_markup.row_width == 2  # Should match the number of users
+
+    # Verify if the users were added to the markup correctly
+    assert "User1" in [button.text for button in reply_markup.keyboard[0]]
+    assert "User2" in [button.text for button in reply_markup.keyboard[0]]
+
 
 
