@@ -18,7 +18,7 @@ def test_run_normal_case(mock_telebot, mocker):
     budget_delete.run(message, mc)
 
     # assert(mc.reply_to.called)
-    mc.send_message.assert_called_with(11, "Budget deleted!")
+    mc.send_message.assert_called_with(11, "Budget Deleted!")
 
 
 def create_message(text):
