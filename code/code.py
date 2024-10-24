@@ -190,16 +190,6 @@ def command_add(message):
 def command_add_user(message):
     add_user.register_people(message,bot,user_list)
 
-@bot.message_handler(commands=["delete"])
-def command_delete(message):
-    """
-    command_delete(message): Takes 1 argument message which contains the 
-    message from the user along with the chat ID of the user chat. It then
-    calls delete.py to run to execute the add functionality.
-    Commands used to run this: commands=['display']
-    """
-    delete.run(message, bot)
-
 @bot.message_handler(commands=["delete_user"])
 def command_delete_user(message):
     # Call the delete_user function from the delete_user module
@@ -235,27 +225,6 @@ def command_csv(message):
     the add functionality. Commands used to run this: commands=['csv']
     """
     csvfile.run(message, bot)
-
-# function to fetch expenditure history of the user
-@bot.message_handler(commands=["history"])
-def command_history(message):
-    """
-    command_history(message): Takes 1 argument message which contains the message from
-    the user along with the chat ID of the user chat. It then calls history.py to run to execute
-    the add functionality. Commands used to run this: commands=['history']
-    """
-    history.run(message, bot)
-
-
-# function to edit date, category or cost of a transaction
-@bot.message_handler(commands=["edit"])
-def command_edit(message):
-    """
-    command_edit(message): Takes 1 argument message which contains the message from
-    the user along with the chat ID of the user chat. It then calls edit.py to run to execute
-    the add functionality. Commands used to run this: commands=['edit']
-    """
-    edit.run(message, bot)
 
 
 # function to display total expenditure
