@@ -169,7 +169,7 @@ def test_post_category_amount_input_nonworking_case(mock_telebot, mocker):
     budget_update.helper.throw_exception.return_value = True
 
     message = create_message("Hello from testing")
-    budget_update.post_category_amount_input(message, mc, "Food")
+    budget_update.post_category_amount_input(message, mc, "Grocerries")
 
     assert budget_update.helper.throw_exception.called
 
