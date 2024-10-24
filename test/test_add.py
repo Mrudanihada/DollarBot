@@ -4,6 +4,8 @@ from unittest.mock import patch
 from telebot import types
 from datetime import datetime
 from code import add
+from unittest.mock import MagicMock
+
 
 
 dateFormat = "%d-%b-%Y"
@@ -143,21 +145,25 @@ def create_user_list():
 
 def test_run_new_user():
     # Set up the bot and message objects
-    bot = MagicMock()
-    message = MagicMock()
-    message.chat.id = 12345
-    message.text = "Test User"
-    
-    # Mock helper functions
-    helper.read_json = MagicMock(return_value={})  # No existing users
+    bot = MagicMock()  # Mock the bot
+    message = MagicMock()  # Mock the message object
+    message.chat.id = 12345  # Set the chat id for testing
+    message.text = "Test User"  # Simulate a user message
+
+    # Mock the helper functions
+    helper.read_json = MagicMock(return_value={})  # Simulate no users in the list
     helper.createNewUserRecord = MagicMock(return_value={"users": ["User1", "User2"]})
 
-    # Call the function
+    # Call the function you are testing
     run(message, bot)
-    
-    # Check if the correct message was sent to the user
+
+    # Ensure the message was sent to the correct chat with the expected text
     bot.send_message.assert_called_with(12345, "Select who paid for the Expense", reply_markup=MagicMock())
 
-    # Check if new user record was created
+    # Ensure a new user record was created using the helper method
     helper.createNewUserRecord.assert_called_with(message)
+
+    # Ensure the markup row width is correct based on users
+    assert bot.send_message.call_args[1]["reply_markup"].row_width == 2
+
 
