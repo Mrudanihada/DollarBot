@@ -1,208 +1,141 @@
-"""
-
-MIT License
-
-Copyright (c) 2021 Dev Kumar
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-"""
-import os
-import json
-from mock.mock import patch
-from telebot import types
-from code import add
-from mock import Mock
 import pytest
+from unittest.mock import patch
+from telebot import types
+from datetime import datetime
+from code import add
 
-dateFormat = '%d-%b-%Y'
-timeFormat = '%H:%M'
-monthFormat = '%b-%Y'
 
+dateFormat = "%d-%b-%Y"
+timeFormat = "%H:%M"
+monthFormat = "%b-%Y"
 
-@patch('telebot.telebot')
-def test_run(mock_telebot, mocker):
+@patch("telebot.telebot")
+@patch("add.helper.read_json")
+def test_run(user_mock,mock_telebot):
     mc = mock_telebot.return_value
+    user_mock.return_value = create_user_list()
     mc.reply_to.return_value = True
     message = create_message("hello from test run!")
     add.run(message, mc)
-    assert (mc.reply_to.called)
+    assert not mc.reply_to.called
 
-
-@patch('telebot.telebot')
+@patch("telebot.telebot")
 def test_post_category_selection_working(mock_telebot, mocker):
     mc = mock_telebot.return_value
     mc.send_message.return_value = True
-
     message = create_message("hello from testing!")
-    add.post_category_selection(message, mc)
-    assert (mc.send_message.called)
+    user_list = create_user_list()
+    paid_by = 'User1'
+    owed_by = ['User1']
+    add.post_category_selection(message, mc,owed_by,paid_by,user_list)
+    assert mc.send_message.called
 
-
-@patch('telebot.telebot')
+@patch("telebot.telebot")
 def test_post_category_selection_noMatchingCategory(mock_telebot, mocker):
     mc = mock_telebot.return_value
     mc.send_message.return_value = []
     mc.reply_to.return_value = True
-
-    mocker.patch.object(add, 'helper')
+    mocker.patch.object(add, "helper")
+    user_list = create_user_list()
+    paid_by = 'User1'
+    owed_by = ['User1','User2']
     add.helper.getSpendCategories.return_value = None
+    message = create_message("Food")
+    add.post_category_selection(message, mc,owed_by,paid_by,user_list)
+    assert mc.reply_to.called
 
-    message = create_message("hello from testing!")
-    add.post_category_selection(message, mc)
-    assert (mc.reply_to.called)
-
-
-@patch('telebot.telebot')
+@patch("telebot.telebot")
 def test_post_amount_input_working(mock_telebot, mocker):
     mc = mock_telebot.return_value
     mc.send_message.return_value = True
+    user_list = create_user_list()
+    paid_by = 'User1'
+    owed_by = ['User1','User2']
+    message = create_message("40")
+    add.post_category_selection(message, mc,owed_by,paid_by,user_list)
+    assert mc.send_message.called
 
-    message = create_message("hello from testing!")
-    add.post_category_selection(message, mc)
-    assert (mc.send_message.called)
-
-@patch('telebot.telebot')
-@patch('code.helper.validate_entered_amount', Mock(return_value=0))
-def test_post_amount_input_failing_with_zero_amount(mock_telebot, mocker):
-    with pytest.raises(Exception) as e_info:
-        raise Exception('It failed')
-
-    mc = mock_telebot.return_value
-    mc.send_message.return_value = True
-
-    message = create_message("hello from testing!")
-    add.post_amount_input(message, mc, "DummyCategory", "USD")
-    assert str(e_info.value) == 'It failed'
-    assert (mc.reply_to.called)
-
-@patch('telebot.telebot')
+@patch("telebot.telebot")
 def test_post_amount_input_working_withdata(mock_telebot, mocker):
     mc = mock_telebot.return_value
     mc.send_message.return_value = True
-    mocker.patch.object(add, 'helper')
-    add.helper.validate_entered_amount.return_value = 100
+    mocker.patch.object(add, "helper")
+    add.helper.validate_entered_amount.return_value = 10
     add.helper.write_json.return_value = True
     add.helper.getDateFormat.return_value = dateFormat
     add.helper.getTimeFormat.return_value = timeFormat
-    add.helper.get_account_type.return_value = "Checking"
-    add.helper.get_account_balance.return_value = 100 
-
-    mocker.patch.object(add, 'option')
+    mocker.patch.object(add, "option")
     add.option.return_value = {11, "here"}
-
+    user_list = create_user_list()
+    paid_by = 'User1'
+    owed_by = ['User1','User2']
+    message = create_message("40")
     message = create_message("hello from testing!")
-    add.post_amount_input(message, mc, 'Food','INR')
-    assert (mc.send_message.called)
+    add.post_amount_input(message, mc, "Food",owed_by,paid_by,user_list)
+    assert mc.send_message.called
 
-
-@patch('telebot.telebot')
+@patch("telebot.telebot")
 def test_post_amount_input_nonworking(mock_telebot, mocker):
     mc = mock_telebot.return_value
     mc.send_message.return_value = True
     mc.reply_to.return_value = True
-    mocker.patch.object(add, 'helper')
+    mocker.patch.object(add, "helper")
     add.helper.validate_entered_amount.return_value = 0
     message = create_message("hello from testing!")
-    add.post_amount_input(message, mc, 'Food','INR')
-    assert (mc.reply_to.called)
+    add.post_amount_input(message, mc, "Food",['User1','User2'],'User1',create_user_list())
+    assert mc.reply_to.called
 
-
-@patch('telebot.telebot')
+@patch("telebot.telebot")
 def test_post_amount_input_working_withdata_chatid(mock_telebot, mocker):
     mc = mock_telebot.return_value
     mc.send_message.return_value = True
-    mocker.patch.object(add, 'helper')
-    add.helper.validate_entered_amount.return_value = 100
+    mocker.patch.object(add, "helper")
+    add.helper.validate_entered_amount.return_value = 10
     add.helper.write_json.return_value = True
     add.helper.getDateFormat.return_value = dateFormat
     add.helper.getTimeFormat.return_value = timeFormat
-    add.helper.get_account_type.return_value = "Checking"
-    add.helper.get_account_balance.return_value = 100 
-
-    mocker.patch.object(add, 'option')
+    mocker.patch.object(add, "option")
     add.option = {11, "here"}
     test_option = {}
     test_option[11] = "here"
     add.option = test_option
-
     message = create_message("hello from testing!")
-    add.post_amount_input(message, mc, 'Food','INR')
-    assert (mc.send_message.called)
-    #assert (mc.send_message.called_with(11, ANY))
-
+    add.post_amount_input(message, mc, "Food",['User1','User2'],'User1',create_user_list())
+    assert mc.send_message.called
+    assert mc.send_message.called_with(11)
 
 def test_add_user_record_nonworking(mocker):
-    mocker.patch.object(add, 'helper')
+    mocker.patch.object(add, "helper")
     add.helper.read_json.return_value = {}
-    addeduserrecord = add.add_user_record(1, "record : test")
-    assert (addeduserrecord)
-
+    addeduserrecord = add.add_user_record(create_user_list(), "record : test",'11',
+                                          "{},{},{}".format('17-Oct-2023 13:23', 'Food', '40'),40,['User1','User2'],'User1')
+    assert addeduserrecord
 
 def test_add_user_record_working(mocker):
-    MOCK_USER_DATA = test_read_json()
-    mocker.patch.object(add, 'helper')
+    MOCK_USER_DATA = create_user_list()
+    mocker.patch.object(add, "helper")
     add.helper.read_json.return_value = MOCK_USER_DATA
-    addeduserrecord = add.add_user_record(1, "record : test")
-    if (len(MOCK_USER_DATA) + 1 == len(addeduserrecord)):
+    addeduserrecord = add.add_user_record(create_user_list(), "record : test",'11',
+                                          "{},{},{}".format('17-Oct-2023 13:23', 'Food', '40'),40,['User1','User2'],'User1')
+    if len(MOCK_USER_DATA) + 1 == len(addeduserrecord):
         assert True
-
-
-def test_add_user_balance_record_working(mocker):
-    MOCK_USER_DATA = test_read_json()
-    mocker.patch.object(add, 'helper')
-    add.helper.read_json.return_value = MOCK_USER_DATA
-
-    addeduserrecord = add.add_user_balance_record('1', "record: test2")
-    if (len(MOCK_USER_DATA) + 1 == len(addeduserrecord)):
-        assert True
-
-@patch('code.add.helper.get_account_type', Mock(return_value='Savings'))
-@patch('code.add.helper.get_account_balance', Mock(return_value=10))
-def test_is_valid_resource_true(mocker):
-
-    return_val = add.is_Valid_expense("DummyMsg", 5)
-    assert (return_val == True)
-
-@patch('code.add.helper.get_account_type', Mock(return_value='Savings'))
-@patch('code.add.helper.get_account_balance', Mock(return_value=100))
-def test_is_valid_resource_false(mocker):
-
-    return_val = add.is_Valid_expense("DummyMsg", 105)
-    assert (return_val == False)
 
 def create_message(text):
-    params = {'messagebody': text}
-    chat = types.User(11, False, 'test')
-    return types.Message(1, None, None, chat, 'text', params, "")
+    params = {"messagebody": text}
+    chat = types.User(11, False, "test")
 
+    message = types.Message(1, None, None, chat, "text", params, "")
+    message.text = text
+    return message
 
-def test_read_json():
-    try:
-        if not os.path.exists('./test/dummy_expense_record.json'):
-            with open('./test/dummy_expense_record.json', 'w') as json_file:
-                json_file.write('{}')
-            return json.dumps('{}')
-        elif os.stat('./test/dummy_expense_record.json').st_size != 0:
-            with open('./test/dummy_expense_record.json') as expense_record:
-                expense_record_data = json.load(expense_record)
-            return expense_record_data
+def create_user_list():
+    return {'users': ['User1'], 
+                  'owed': {'User1': 0}, 
+                  'owing': {'User1': {}}, 
+                  'data': [], 
+                  'csv_data': [], 
+                  'budget': {'overall': '0', 'category': {'Food': '0', 'Groceries': '0', 'Utilities': '0', 'Transport': '0', 'Shopping': '0', 'Miscellaneous': '0'}}, 
+                  '11': {'users': ['User1', 'User1', 'User2', 'User3', 'User4'], 'owed': {'User1': 57.5, 'User2': 0, 'User3': 0, 'User4': 0}, 
+                         'owing': {'User1': {}, 'User2': {'User1': 22.5}, 'User3': {'User1': 12.5}, 'User4': {'User1': 22.5}}, 
+                        'data': ['17-Oct-2023 13:16,Utilities,20.0', '17-Oct-2023 13:23,Transport,50.0', '18-Oct-2023 23:54,Food,30.0'], 'csv_data': ['17-Oct-2023 13:16,Utilities,20.0,Sho,User1', '17-Oct-2023 13:23,Transport,50.0,Sho,Sakshi & Rutuja & Sho & User4', '18-Oct-2023 23:54,Food,30.0,Sho,Sakshi & Sho & User4'], 'budget': {'overall': '0', 'category': {'Food': '0', 'Groceries': '0', 'Utilities': '0', 'Transport': '0', 'Shopping': '0', 'Miscellaneous': '0'}}}}
 
-    except FileNotFoundError:
-        print("---------NO RECORDS FOUND---------")

@@ -5,7 +5,7 @@ from telebot import types
 from code import display
 
 
-@patch('telebot.telebot')
+@patch("telebot.telebot")
 def test_run(mock_telebot, mocker):
     mc = mock_telebot.return_value
     mc.reply_to.return_value = True
@@ -14,7 +14,7 @@ def test_run(mock_telebot, mocker):
     assert mc.send_message.called
 
 
-@patch('telebot.telebot')
+@patch("telebot.telebot")
 def test_no_data_available(mock_telebot, mocker):
     mc = mock_telebot.return_value
     mc.reply_to.return_value = True
@@ -23,7 +23,7 @@ def test_no_data_available(mock_telebot, mocker):
     assert mc.send_message.called
 
 
-@patch('telebot.telebot')
+@patch("telebot.telebot")
 def test_invalid_format(mock_telebot, mocker):
     mc = mock_telebot.return_value
     mc.reply_to.return_value = True
@@ -35,7 +35,7 @@ def test_invalid_format(mock_telebot, mocker):
         assert True
 
 
-@patch('telebot.telebot')
+@patch("telebot.telebot")
 def test_valid_format(mock_telebot, mocker):
     mc = mock_telebot.return_value
     mc.reply_to.return_value = True
@@ -47,7 +47,7 @@ def test_valid_format(mock_telebot, mocker):
         assert False
 
 
-@patch('telebot.telebot')
+@patch("telebot.telebot")
 def test_valid_format_day(mock_telebot, mocker):
     mc = mock_telebot.return_value
     mc.reply_to.return_value = True
@@ -59,15 +59,15 @@ def test_valid_format_day(mock_telebot, mocker):
         assert False
 
 
-@patch('telebot.telebot')
+@patch("telebot.telebot")
 def test_spending_run_working(mock_telebot, mocker):
+
     MOCK_USER_DATA = test_read_json()
-    mocker.patch.object(display, 'helper')
+    mocker.patch.object(display, "helper")
     display.helper.getUserHistory.return_value = MOCK_USER_DATA["894127939"]
-    display.helper.getSpendDisplayOptions.return_value = [
-        "Day", "Month"]
-    display.helper.getDateFormat.return_value = '%d-%b-%Y'
-    display.helper.getMonthFormat.return_value = '%b-%Y'
+    display.helper.getSpendDisplayOptions.return_value = ["Day", "Month"]
+    display.helper.getDateFormat.return_value = "%d-%b-%Y"
+    display.helper.getMonthFormat.return_value = "%b-%Y"
     mc = mock_telebot.return_value
     mc.reply_to.return_value = True
     message = create_message("Day")
@@ -76,15 +76,15 @@ def test_spending_run_working(mock_telebot, mocker):
     assert not mc.send_message.called
 
 
-@patch('telebot.telebot')
+@patch("telebot.telebot")
 def test_spending_display_working(mock_telebot, mocker):
+
     MOCK_USER_DATA = test_read_json()
-    mocker.patch.object(display, 'helper')
+    mocker.patch.object(display, "helper")
     display.helper.getUserHistory.return_value = MOCK_USER_DATA["894127939"]
-    display.helper.getSpendDisplayOptions.return_value = [
-        "Day", "Month"]
-    display.helper.getDateFormat.return_value = '%d-%b-%Y'
-    display.helper.getMonthFormat.return_value = '%b-%Y'
+    display.helper.getSpendDisplayOptions.return_value = ["Day", "Month"]
+    display.helper.getDateFormat.return_value = "%d-%b-%Y"
+    display.helper.getMonthFormat.return_value = "%b-%Y"
     mc = mock_telebot.return_value
     mc.reply_to.return_value = True
     message = create_message("Day")
@@ -93,15 +93,15 @@ def test_spending_display_working(mock_telebot, mocker):
     assert mc.send_message.called
 
 
-@patch('telebot.telebot')
+@patch("telebot.telebot")
 def test_spending_display_month(mock_telebot, mocker):
+
     MOCK_USER_DATA = test_read_json()
-    mocker.patch.object(display, 'helper')
+    mocker.patch.object(display, "helper")
     display.helper.getUserHistory.return_value = MOCK_USER_DATA["894127939"]
-    display.helper.getSpendDisplayOptions.return_value = [
-        "Day", "Month"]
-    display.helper.getDateFormat.return_value = '%d-%b-%Y'
-    display.helper.getMonthFormat.return_value = '%b-%Y'
+    display.helper.getSpendDisplayOptions.return_value = ["Day", "Month"]
+    display.helper.getDateFormat.return_value = "%d-%b-%Y"
+    display.helper.getMonthFormat.return_value = "%b-%Y"
     mc = mock_telebot.return_value
     mc.reply_to.return_value = True
     message = create_message("Month")
@@ -111,19 +111,19 @@ def test_spending_display_month(mock_telebot, mocker):
 
 
 def create_message(text):
-    params = {'messagebody': text}
-    chat = types.User(11, False, 'test')
-    return types.Message(894127939, None, None, chat, 'text', params, "")
+    params = {"messagebody": text}
+    chat = types.User(11, False, "test")
+    return types.Message(894127939, None, None, chat, "text", params, "")
 
 
 def test_read_json():
     try:
-        if not os.path.exists('./test/dummy_expense_record.json'):
-            with open('./test/dummy_expense_record.json', 'w') as json_file:
-                json_file.write('{}')
-            return json.dumps('{}')
-        elif os.stat('./test/dummy_expense_record.json').st_size != 0:
-            with open('./test/dummy_expense_record.json') as expense_record:
+        if not os.path.exists("./test/dummy_expense_record.json"):
+            with open("./test/dummy_expense_record.json", "w") as json_file:
+                json_file.write("{}")
+            return json.dumps("{}")
+        elif os.stat("./test/dummy_expense_record.json").st_size != 0:
+            with open("./test/dummy_expense_record.json") as expense_record:
                 expense_record_data = json.load(expense_record)
             return expense_record_data
 

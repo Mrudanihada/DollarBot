@@ -1,29 +1,3 @@
-"""
-
-MIT License
-
-Copyright (c) 2021 Dev Kumar
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-"""
-
 import os
 import json
 from mock import patch
@@ -31,7 +5,7 @@ from telebot import types
 from code import estimate
 
 
-@patch('telebot.telebot')
+@patch("telebot.telebot")
 def test_run(mock_telebot, mocker):
     mc = mock_telebot.return_value
     mc.reply_to.return_value = True
@@ -40,7 +14,7 @@ def test_run(mock_telebot, mocker):
     assert mc.send_message.called
 
 
-@patch('telebot.telebot')
+@patch("telebot.telebot")
 def test_no_data_available(mock_telebot, mocker):
     mc = mock_telebot.return_value
     mc.reply_to.return_value = True
@@ -49,7 +23,7 @@ def test_no_data_available(mock_telebot, mocker):
     assert mc.send_message.called
 
 
-@patch('telebot.telebot')
+@patch("telebot.telebot")
 def test_invalid_format(mock_telebot, mocker):
     mc = mock_telebot.return_value
     mc.reply_to.return_value = True
@@ -61,7 +35,7 @@ def test_invalid_format(mock_telebot, mocker):
         assert True
 
 
-@patch('telebot.telebot')
+@patch("telebot.telebot")
 def test_valid_format(mock_telebot, mocker):
     mc = mock_telebot.return_value
     mc.reply_to.return_value = True
@@ -73,7 +47,7 @@ def test_valid_format(mock_telebot, mocker):
         assert False
 
 
-@patch('telebot.telebot')
+@patch("telebot.telebot")
 def test_valid_format_day(mock_telebot, mocker):
     mc = mock_telebot.return_value
     mc.reply_to.return_value = True
@@ -85,16 +59,15 @@ def test_valid_format_day(mock_telebot, mocker):
         assert False
 
 
-@patch('telebot.telebot')
+@patch("telebot.telebot")
 def test_spending_estimate_working(mock_telebot, mocker):
 
     MOCK_USER_DATA = test_read_json()
-    mocker.patch.object(estimate, 'helper')
+    mocker.patch.object(estimate, "helper")
     estimate.helper.getUserHistory.return_value = MOCK_USER_DATA["894127939"]
-    estimate.helper.getSpendEstimateOptions.return_value = [
-        "Next day", "Next month"]
-    estimate.helper.getDateFormat.return_value = '%d-%b-%Y'
-    estimate.helper.getMonthFormat.return_value = '%b-%Y'
+    estimate.helper.getSpendEstimateOptions.return_value = ["Next day", "Next month"]
+    estimate.helper.getDateFormat.return_value = "%d-%b-%Y"
+    estimate.helper.getMonthFormat.return_value = "%b-%Y"
     mc = mock_telebot.return_value
     mc.reply_to.return_value = True
     message = create_message("Next day")
@@ -103,16 +76,15 @@ def test_spending_estimate_working(mock_telebot, mocker):
     assert mc.send_message.called
 
 
-@patch('telebot.telebot')
+@patch("telebot.telebot")
 def test_spending_estimate_month(mock_telebot, mocker):
 
     MOCK_USER_DATA = test_read_json()
-    mocker.patch.object(estimate, 'helper')
+    mocker.patch.object(estimate, "helper")
     estimate.helper.getUserHistory.return_value = MOCK_USER_DATA["894127939"]
-    estimate.helper.getSpendEstimateOptions.return_value = [
-        "Next day", "Next month"]
-    estimate.helper.getDateFormat.return_value = '%d-%b-%Y'
-    estimate.helper.getMonthFormat.return_value = '%b-%Y'
+    estimate.helper.getSpendEstimateOptions.return_value = ["Next day", "Next month"]
+    estimate.helper.getDateFormat.return_value = "%d-%b-%Y"
+    estimate.helper.getMonthFormat.return_value = "%b-%Y"
     mc = mock_telebot.return_value
     mc.reply_to.return_value = True
     message = create_message("Next month")
@@ -122,19 +94,19 @@ def test_spending_estimate_month(mock_telebot, mocker):
 
 
 def create_message(text):
-    params = {'messagebody': text}
-    chat = types.User(11, False, 'test')
-    return types.Message(894127939, None, None, chat, 'text', params, "")
+    params = {"messagebody": text}
+    chat = types.User(11, False, "test")
+    return types.Message(894127939, None, None, chat, "text", params, "")
 
 
 def test_read_json():
     try:
-        if not os.path.exists('./test/dummy_expense_record.json'):
-            with open('./test/dummy_expense_record.json', 'w') as json_file:
-                json_file.write('{}')
-            return json.dumps('{}')
-        elif os.stat('./test/dummy_expense_record.json').st_size != 0:
-            with open('./test/dummy_expense_record.json') as expense_record:
+        if not os.path.exists("./test/dummy_expense_record.json"):
+            with open("./test/dummy_expense_record.json", "w") as json_file:
+                json_file.write("{}")
+            return json.dumps("{}")
+        elif os.stat("./test/dummy_expense_record.json").st_size != 0:
+            with open("./test/dummy_expense_record.json") as expense_record:
                 expense_record_data = json.load(expense_record)
             return expense_record_data
 
