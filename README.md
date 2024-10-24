@@ -7,7 +7,7 @@
 [![GitHub contributors](https://img.shields.io/github/contributors/ymdatta/DollarBot)](https://github.com/rrajpuro/DollarBot/graphs/contributors)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10210342.svg)](https://doi.org/10.5281/zenodo.10210342)
 [![Build Status](https://app.travis-ci.com/sak007/MyDollarBot-BOTGo.svg?branch=main)](https://app.travis-ci.com/github/sak007/MyDollarBot-BOTGo)
-[![codecov](https://codecov.io/gh/sak007/MyDollarBot-BOTGo/branch/Updated_2.0/graph/badge.svg?token=5AYMR8MNMP)](https://codecov.io/gh/sak007/MyDollarBot-BOTGo)
+[![codecov](https://codecov.io/gh/sak007/MyDollarBot-BOTGo/branch/main/graph/badge.svg?token=5AYMR8MNMP)](https://codecov.io/gh/sak007/MyDollarBot-BOTGo)
 [![GitHub open issues](https://img.shields.io/github/issues/ymdatta/DollarBot)](https://github.com/ymdatta/DollarBot/issues?q=is%3Aopen+is%3Aissue)
 [![GitHub closed issues](https://img.shields.io/github/issues-closed/ymdatta/DollarBot)](https://github.com/ymdatta/DollarBot/issues?q=is%3Aissue+is%3Aclosed)
 ![Github pull requests](https://img.shields.io/github/issues-pr/ymdatta/DollarBot)
