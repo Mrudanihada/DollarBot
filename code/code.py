@@ -198,6 +198,15 @@ def command_delete_user(message):
     registered_users=user_list[str(message.chat.id)]["users"]
     delete_user.delete_user(message, bot, user_list)
 
+@bot.message_handler(commands=["edit"])
+def command_edit(message):
+    """
+    command_edit(message): Takes 1 argument message which contains the message from
+    the user along with the chat ID of the user chat. It then calls edit.py to run to execute
+    the add functionality. Commands used to run this: commands=['edit']
+    """
+    edit.run(message, bot)
+
 # function to fetch expenditure history of the user
 @bot.message_handler(commands=["history"])
 def command_history(message):
