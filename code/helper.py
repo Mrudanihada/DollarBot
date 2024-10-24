@@ -126,7 +126,6 @@ def write_json(user_list):
         print("Sorry, the data file could not be found.")
 
 
-# function to validate the entered amount
 def validate_entered_amount(amount_entered):
     """
     validate_entered_amount(amount_entered): Takes 1 argument, amount_entered.
@@ -141,6 +140,7 @@ def validate_entered_amount(amount_entered):
         if amount > 0:
             return str(amount)
     return 0
+
 
 def getUserHistory(chat_id):
     """
@@ -159,15 +159,19 @@ def getUserData(chat_id):
         return user_list[str(chat_id)]
     return None
 
-# function to validate the entered duration
-def validate_entered_duration(duration_entered):
-    if duration_entered is None:
-        return 0
-    if re.match("^[1-9][0-9]{0,14}", duration_entered):
-        duration = int(duration_entered)
-        if duration > 0:
-            return str(duration)
-    return 0
+
+def throw_exception(e, message, bot, logging):
+    logging.exception(str(e))
+    bot.reply_to(message, "Oh no! " + str(e))
+
+
+def createNewUserRecord(message):
+    user_lst = data_format
+    if len(user_lst["users"]) == 0:
+        user_lst["users"].insert(0,message.from_user.first_name)
+        user_lst["owed"][message.from_user.first_name] = 0
+        user_lst["owing"][message.from_user.first_name] = {}
+    return user_lst
 
 # function to get user history
 def getUserHistory(chat_id):
