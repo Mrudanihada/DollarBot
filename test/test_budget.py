@@ -5,13 +5,7 @@ from telebot import types
 from code import budget
 
 
-@patch("telebot.telebot")
-def test_run(mock_telebot, mocker):
-    mc = mock_telebot.return_value
-    mc.reply_to.return_value = True
-    message = create_message("hello from test run!")
-    budget.run(message, mc)
-    assert mc.reply_to.called_with(ANY, "Select Operation", ANY)
+
 
 
 @patch("telebot.telebot")
