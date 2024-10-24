@@ -10,7 +10,7 @@ def test_run_normal_case(mock_telebot, mocker):
 
     mocker.patch.object(budget_delete, "helper")
     budget_delete.helper.read_json.return_value = {
-        "11": {"budget": {"budget": 10, "category": 100}}
+        "11": {"budget": {"budget": 100, "category": 10}}
     }
     budget_delete.helper.write_json.return_value = True
 
