@@ -218,21 +218,6 @@ def isCategoryBudgetByCategoryAvailable(chatId, cat):
         return False
     return cat in data.keys()
 
-def calculate_owing(user_list,chat_id):
-    owing_dict = {}
-    users = user_list[str(chat_id)]["users"]
-    for user in users:
-        owing_dict[user] = {"owes" : [], "owing":[]}
-        for k,v in user_list[str(chat_id)]["owing"][user].items():
-            if k in owing_dict.keys():
-                owing_dict[k]["owing"].append(str(user)+' owes '+str(k)+" an amout of "+"{:.2f}".format(v))
-                owing_dict[user]["owes"].append(str(k)+' is owing from '+str(user)+" an amout of "+"{:.2f}".format(v))
-
-            else:
-                owing_dict[k] ={"owes" :[str(k)+' is owing from '+str(user)+" an amout of "+"{:.2f}".format(v)],"owing" :[str(user)+' owes '+str(k)+" an amout of "+"{:.2f}".format(v)]}
-
-    return owing_dict
-
 
 def display_remaining_budget(message, bot, cat):
     print("inside")
@@ -338,46 +323,50 @@ def getSpendDisplayOptions():
     """
     return spend_display_option
 
-# function to fetch commands
+
+def getSpendEstimateOptions():
+    return spend_estimate_option
+
+
 def getCommands():
+    """
+    getCommands(): This functions returns the command options used in the bot. These are defined the same file.
+    """
     return commands
 
-def calculate_total_spendings(queryResult):
-    total = 0
 
-    for row in queryResult:
-        s = row.split(",")
-        total = total + float(s[2])
-    return total
-
-# function to fetch date format
 def getDateFormat():
+    """
+    getCommands(): This functions returns the command options used in the bot. These are defined the same file.
+    """
     return dateFormat
 
-# function to fetch time format
+
 def getTimeFormat():
+    """
+    def getTimeFormat(): This functions returns the time format used in the bot.
+    """
     return timeFormat
 
-# function to fetch month format
+
 def getMonthFormat():
+    """
+    def getMonthFormat(): This functions returns the month format used in the bot.
+    """
     return monthFormat
 
-# function to fetch choices
+
 def getChoices():
     return choices
 
-# function to fetch budget options
+
 def getBudgetOptions():
     return budget_options
 
-# function to fetch budget types
+
 def getBudgetTypes():
     return budget_types
 
-# function to update options
+
 def getUpdateOptions():
     return update_options
-
-# function to fetch category options
-def getCategoryOptions():
-    return category_options
