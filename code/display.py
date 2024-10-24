@@ -25,111 +25,171 @@ SOFTWARE.
 """
 
 import time
-import os
 import helper
 import graphing
 import logging
 from telebot import types
 from datetime import datetime
 
+# === Documentation of display.py ===
+
 
 def run(message, bot):
-    helper.read_json()
+    """
+    run(message, bot): This is the main function used to implement the delete feature.
+    It takes 2 arguments for processing - message which is the message from the user, and bot
+    which is the telegram bot object from the main code.py function.
+    """
+    user_list=helper.read_json()
     chat_id = message.chat.id
     history = helper.getUserHistory(chat_id)
-    if history is None or history == []:
-        bot.send_message(chat_id, "Sorry, there are no records of the spending!")
+    if history is None:
+        bot.send_message(
+            chat_id, "Oops! Looks like you do not have any spending records!"
+        )
     else:
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-        markup.row_width = 2
-        for mode in helper.getSpendDisplayOptions():
-            markup.add(mode)
-        # markup.add('Day', 'Month')
-        msg = bot.reply_to(message, 'Please select a category to see details', reply_markup=markup)
-        bot.register_next_step_handler(msg, display_total, bot)
+        markup.add("Display all expenses")
+        markup.add("Display owings")
+        m = bot.send_message(chat_id, "Select what to display",reply_markup=markup)
+        bot.register_next_step_handler(m, display_choice, bot,user_list,chat_id)
 
 
-total = ""
-bud = ""
+def display_choice(message,bot,user_list,chat_id):
+    chat_id = message.chat.id
+    choice = message.text
+    if choice == 'Display all expenses':
+        display_expenses(message,bot)
+    elif choice =='Display owings':
+         display_owings(message,bot,user_list,chat_id)
+    else:
+        m = bot.send_message(chat_id, "Select correct choice")
+        bot.register_next_step_handler(m, run, bot)
+
+def display_owings(message,bot,user_list,chat_id):
+        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+        markup.row_width = len(user_list[str(chat_id)]["users"])
+        for c in user_list[str(chat_id)]["users"]:
+                markup.add(c)
+        m = bot.send_message(chat_id, "Select user who's owings you want to display",reply_markup=markup)
+        bot.register_next_step_handler(m, select_user, bot,user_list,chat_id)
+
+def select_user(message,bot,user_list,chat_id):
+    chat_id = message.chat.id
+    user = message.text
+    owing_dictionary = helper.calculate_owing(user_list,chat_id)
+    final_string = ''
+    for owed in owing_dictionary[user]["owes"]:
+            final_string+=str("\n "+owed)
+    for owing in owing_dictionary[user]["owing"]:
+            final_string+=str("\n "+owing)
+    if final_string == '':
+        final_string = str(user)+' owes or is owed nothing'
+    m = bot.send_message(chat_id, final_string)
+
+def display_expenses(message, bot):
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+    markup.row_width = 2
+    for mode in helper.getSpendDisplayOptions():
+        markup.add(mode)
+    # markup.add('Day', 'Month')
+    msg = bot.reply_to(
+        message,
+        "Please select a category to see the total expense",
+        reply_markup=markup,
+    )
+    bot.register_next_step_handler(msg, display_total, bot)
+
 def display_total(message, bot):
-    global total
-    global bud
+    """
+    display_total(message, bot): It takes 2 arguments for processing - message which is
+    the message from the user, and bot which is the telegram bot object from the
+    run(message, bot): function in the same file. This function loads the user's data using
+    the helper file's getUserHistory(chat_id) method. After this, depending on the option user
+    has chosen on the UI, it calls the calculate_spendings(queryResult): to process the queried
+    data to return to the user after which it finally passes the data to the UI for the user to view.
+    """
     try:
         chat_id = message.chat.id
         DayWeekMonth = message.text
 
         if DayWeekMonth not in helper.getSpendDisplayOptions():
-            raise Exception("Sorry I can't show spendings for \"{}\"!".format(DayWeekMonth))
+            raise Exception(
+                'Sorry I can\'t show spendings for "{}"!'.format(DayWeekMonth)
+            )
 
         history = helper.getUserHistory(chat_id)
-        if history is None or history == []:
+        if history is None:
             raise Exception("Oops! Looks like you do not have any spending records!")
 
         bot.send_message(chat_id, "Hold on! Calculating...")
         # show the bot "typing" (max. 5 secs)
-        bot.send_chat_action(chat_id, 'typing')
+        bot.send_chat_action(chat_id, "typing")
         time.sleep(0.5)
-        total_text = ""
-        # get budget data
-        budgetData = {}
-        if helper.isOverallBudgetAvailable(chat_id):
-            budgetData = helper.getOverallBudget(chat_id)
-        elif helper.isCategoryBudgetAvailable(chat_id):
-            budgetData = helper.getCategoryBudget(chat_id)
 
-        if DayWeekMonth == 'Day':
+        total_text = ""
+
+        if DayWeekMonth == "Day":
             query = datetime.now().today().strftime(helper.getDateFormat())
             # query all that contains today's date
-            queryResult = [value for index, value in enumerate(history) if str(query) in value]
-        elif DayWeekMonth == 'Month':
+            queryResult = [
+                value for index, value in enumerate(history) if str(query) in value
+            ]
+        elif DayWeekMonth == "Month":
             query = datetime.now().today().strftime(helper.getMonthFormat())
             # query all that contains today's date
-            queryResult = [value for index, value in enumerate(history) if str(query) in value]
-
+            queryResult = [
+                value for index, value in enumerate(history) if str(query) in value
+            ]
         total_text = calculate_spendings(queryResult)
-        total = total_text
-        bud = budgetData
-        spending_text = display_budget_by_text(history, budgetData)
-        if len(total_text) == 0:
-            spending_text += "----------------------\nYou have no spendings for {}!".format(DayWeekMonth)
-            bot.send_message(chat_id, spending_text)
+        print("###########",total_text)
+        monthly_budget = helper.getCategoryBudget(chat_id)
+        if monthly_budget == None:
+            message = "Looks like you have not entered any category-wise budget yet. Please enter your budget and then try to display the expenses."
+            bot.send_message(chat_id, message)
+
+            display_text = ""
+            commands = helper.getCommands()
+            for (
+            c
+            ) in (
+                commands
+            ):  # generate help text out of the commands dictionary defined at the top
+                display_text += "/" + c + ": "
+                display_text += commands[c] + "\n"
+            bot.send_message(chat_id, "Please select a menu option from below:")
+            bot.send_message(chat_id, display_text)
         else:
-            spending_text += "\n----------------------\nHere are your total spendings {}:\nCATEGORIES,AMOUNT \n----------------------\n{}".format(
-                DayWeekMonth.lower(), total_text)
-            bot.send_message(chat_id, spending_text)
-            markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-            markup.row_width = 2
-            for plot in helper.getplot():
-                markup.add(plot)
-                # markup.add('Day', 'Month')
-            msg = bot.reply_to(message, 'Please select a plot to see the total expense', reply_markup=markup)
-            bot.register_next_step_handler(msg, plot_total, bot)
+            print("Print Total Spending", total_text)
+            print("Print monthly budget", monthly_budget)
+
+            spending_text = ""
+            if len(total_text) == 0:
+                spending_text = "You have no spendings for {}!".format(DayWeekMonth)
+                bot.send_message(chat_id, spending_text)
+            else:
+                spending_text = "Here are your total spendings {}:\nCATEGORIES,AMOUNT \n----------------------\n{}".format(
+                    DayWeekMonth.lower(), total_text
+                )
+                graphing.visualize(total_text, monthly_budget)
+                bot.send_photo(chat_id, photo=open("expenditure.png", "rb"))
+                # os.remove('expenditure.png')
     except Exception as e:
         logging.exception(str(e))
         bot.reply_to(message, str(e))
 
-def plot_total(message, bot):
-    chat_id = message.chat.id
-    pyi = message.text
-    if pyi == 'Bar with budget':
-        graphing.visualize(total, bud)
-        bot.send_photo(chat_id, photo=open('expenditure.png', 'rb'))
-        os.remove('expenditure.png')
-    elif pyi == 'Bar without budget': 
-        graphing.viz(total)
-        bot.send_photo(chat_id, photo=open('expend.png', 'rb'))
-        os.remove('expend.png')
-    else:
-        graphing.vis(total)
-        bot.send_photo(chat_id, photo=open('pie.png', 'rb'))
-        os.remove('pie.png')
 
 def calculate_spendings(queryResult):
+    """
+    calculate_spendings(queryResult): Takes 1 argument for processing - queryResult
+    which is the query result from the display total function in the same file.
+    It parses the query result and turns it into a form suitable for display on the UI by the user.
+    """
     total_dict = {}
-
+    print("!!!!!!",queryResult)
     for row in queryResult:
         # date,cat,money
-        s = row.split(',')
+        s = row.split(",")
         # cat
         cat = s[1]
         if cat in total_dict:
@@ -142,44 +202,3 @@ def calculate_spendings(queryResult):
         total_text += str(key) + " $" + str(value) + "\n"
     return total_text
 
-
-def display_budget_by_text(history, budget_data) -> str:
-    query = datetime.now().today().strftime(helper.getMonthFormat())
-    # query all expense history that contains today's date
-    queryResult = [value for index, value in enumerate(history) if str(query) in value]
-    total_text = calculate_spendings(queryResult)
-    budget_display = ""
-    total_text_split = [line for line in total_text.split('\n') if line.strip() != '']
-
-    if isinstance(budget_data, str):
-        # if budget is string denoting it is overall budget
-        budget_val = float(budget_data)
-        total_expense = 0
-        # sum all expense
-        for expense in total_text_split:
-            a = expense.split(' ')
-            amount = a[1].replace("$", "")
-            total_expense += float(amount)
-        # calculate the remaining budget
-        remaining = budget_val - total_expense
-        # set the return message
-        budget_display += "Overall Budget is: " + str(budget_val) + "\n----------------------\nCurrent remaining budget is " + str(
-            remaining) + "\n"
-    elif isinstance(budget_data, dict):
-        budget_display += "Budget by Catergories is:\n"
-        categ_remaining = {}
-        # categorize the budgets by their categories
-        for key in budget_data.keys():
-            budget_display += key + ":" + budget_data[key] + "\n"
-            categ_remaining[key] = float(budget_data[key])
-        #  calculate the remaining budgets by categories
-        for i in total_text_split:
-            # the expense text is in the format like "Food $100"
-            a = i.split(' ')
-            a[1] = a[1].replace("$", "")
-            categ_remaining[a[0]] = categ_remaining[a[0]] - float(a[1]) if a[0] in categ_remaining else -float(a[1])
-        budget_display += "----------------------\nCurrent remaining budget is: \n"
-        # show the remaining budgets
-        for key in categ_remaining.keys():
-            budget_display += key + ":" + str(categ_remaining[key]) + "\n"
-    return budget_display
