@@ -24,8 +24,6 @@ SOFTWARE.
 
 """
 
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 import logging
 import time
 from datetime import datetime
@@ -198,14 +196,35 @@ def command_delete_user(message):
     registered_users=user_list[str(message.chat.id)]["users"]
     delete_user.delete_user(message, bot, user_list)
 
-@bot.message_handler(commands=["edit"])
-def command_edit(message):
+@bot.message_handler(commands=["add_category"])
+def command_add_category(message):
     """
-    command_edit(message): Takes 1 argument message which contains the message from
-    the user along with the chat ID of the user chat. It then calls edit.py to run to execute
-    the add functionality. Commands used to run this: commands=['edit']
+    command_add(message) Takes 1 argument message which contains the message from
+    the user along with the chat ID of the user chat. It then calls add.py to run to execute
+    the add functionality. Commands used to run this: commands=['add']
     """
-    edit.run(message, bot)
+    add_category.run(message, bot)
+# function to fetch expenditure history of the user
+
+
+@bot.message_handler(commands=["pdf"])
+def command_pdf(message):
+    """
+    command_history(message): Takes 1 argument message which contains the message from
+    the user along with the chat ID of the user chat. It then calls pdf.py to run to execute
+    the add functionality. Commands used to run this: commands=['pdf']
+    """
+    pdf.run(message, bot)
+
+
+@bot.message_handler(commands=["csv"])
+def command_csv(message):
+    """
+    command_history(message): Takes 1 argument message which contains the message from
+    the user along with the chat ID of the user chat. It then calls csv.py to run to execute
+    the add functionality. Commands used to run this: commands=['csv']
+    """
+    csvfile.run(message, bot)
 
 # function to fetch expenditure history of the user
 @bot.message_handler(commands=["history"])
@@ -217,22 +236,28 @@ def command_history(message):
     """
     history.run(message, bot)
 
-@bot.message_handler(commands=["add_category"])
-def command_add_category(message):
-    """
-    command_add(message) Takes 1 argument message which contains the message from
-    the user along with the chat ID of the user chat. It then calls add.py to run to execute
-    the add functionality. Commands used to run this: commands=['add']
-    """
-    add_category.run(message, bot)
-# function to fetch expenditure history of the user
 
-# Define a function to periodically check reminders
-def reminder_checker():
-    while True:
-        check_reminders(bot)
-        # Sleep for one minute
-        time.sleep(60)
+# function to edit date, category or cost of a transaction
+@bot.message_handler(commands=["edit"])
+def command_edit(message):
+    """
+    command_edit(message): Takes 1 argument message which contains the message from
+    the user along with the chat ID of the user chat. It then calls edit.py to run to execute
+    the add functionality. Commands used to run this: commands=['edit']
+    """
+    edit.run(message, bot)
+
+
+# function to display total expenditure
+@bot.message_handler(commands=["display"])
+def command_display(message):
+    """
+    command_display(message): Takes 1 argument message which contains the message from the user
+    along with the chat ID of the user chat. It then calls display.py to run to execute
+    the add functionality.
+    Commands used to run this: commands=['display']
+    """
+    display.run(message, bot)
 
 
 # The main function
