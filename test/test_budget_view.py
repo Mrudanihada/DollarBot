@@ -32,7 +32,7 @@ def test_display_category_budget(mock_telebot, mocker):
         "Groceries": 65.21,
     }
     budget_view.helper.getCategoryBudget.return_value = dummy_categ_val
-    message = create_message("hello from testing")
+    message = create_message("Hello from Testing")
     budget_view.display_category_budget(message, mc)
     assert mc.send_photo.called
     mc.send_photo.called_with(11, ANY)
