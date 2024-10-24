@@ -198,6 +198,15 @@ def command_delete_user(message):
     registered_users=user_list[str(message.chat.id)]["users"]
     delete_user.delete_user(message, bot, user_list)
 
+@bot.message_handler(commands=["pdf"])
+def command_pdf(message):
+    """
+    command_history(message): Takes 1 argument message which contains the message from
+    the user along with the chat ID of the user chat. It then calls pdf.py to run to execute
+    the add functionality. Commands used to run this: commands=['pdf']
+    """
+    pdf.run(message, bot)
+
 @bot.message_handler(commands=["add_category"])
 def command_add_category(message):
     """
