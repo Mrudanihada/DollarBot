@@ -216,15 +216,7 @@ def command_pdf(message):
     """
     pdf.run(message, bot)
 
-@bot.message_handler(commands=["pdf"])
-def command_pdf(message):
-    """
-    command_history(message): Takes 1 argument message which contains the message from
-    the user along with the chat ID of the user chat. It then calls pdf.py to run to execute
-    the add functionality. Commands used to run this: commands=['pdf']
-    """
-    pdf.run(message, bot)
-    
+
 @bot.message_handler(commands=["csv"])
 def command_csv(message):
     """
@@ -233,6 +225,27 @@ def command_csv(message):
     the add functionality. Commands used to run this: commands=['csv']
     """
     csvfile.run(message, bot)
+
+# function to fetch expenditure history of the user
+@bot.message_handler(commands=["history"])
+def command_history(message):
+    """
+    command_history(message): Takes 1 argument message which contains the message from
+    the user along with the chat ID of the user chat. It then calls history.py to run to execute
+    the add functionality. Commands used to run this: commands=['history']
+    """
+    history.run(message, bot)
+
+
+# function to edit date, category or cost of a transaction
+@bot.message_handler(commands=["edit"])
+def command_edit(message):
+    """
+    command_edit(message): Takes 1 argument message which contains the message from
+    the user along with the chat ID of the user chat. It then calls edit.py to run to execute
+    the add functionality. Commands used to run this: commands=['edit']
+    """
+    edit.run(message, bot)
 
 
 # function to display total expenditure
@@ -247,8 +260,60 @@ def command_display(message):
     display.run(message, bot)
 
 
-# The main function
+# function to estimate future expenditure
+@bot.message_handler(commands=["estimate"])
+def command_estimate(message):
+    estimate.run(message, bot)
+
+
+# handles "/delete" command
+@bot.message_handler(commands=["delete"])
+def command_delete(message):
+    """
+    command_delete(message): Takes 1 argument message which contains the 
+    message from the user along with the chat ID of the user chat. It then
+    calls delete.py to run to execute the add functionality.
+    Commands used to run this: commands=['display']
+    """
+    delete.run(message, bot)
+
+# handles "/delete_expense" command
+@bot.message_handler(commands=["delete_expense"])
+def command_delete(message):
+    """
+    command_delete(message): Takes 1 argument message which contains the 
+    message from the user along with the chat ID of the user chat. It then
+    calls delete_expense.py to run to execute the add functionality.
+    Commands used to run this: commands=['display']
+    """
+    delete_expense.run(message, bot)
+
+
+@bot.message_handler(commands=["budget"])
+def command_budget(message):
+    budget.run(message, bot)
+
+@bot.message_handler(commands=["send_mail"])
+def command_send_mail(message):
+    send_mail.run(message, bot)
+
+
+# not used
+
+
+def addUserHistory(chat_id, user_record):
+    global user_list
+    if not str(chat_id) in user_list:
+        user_list[str(chat_id)] = []
+    user_list[str(chat_id)].append(user_record)
+    return user_list
+
+
 def main():
+    """
+    main() The entire bot's execution begins here. It ensure the bot variable begins
+    polling and actively listening for requests from telegram.
+    """
     try:
         bot.polling(none_stop=True)
     except Exception as e:
@@ -257,9 +322,5 @@ def main():
         print("Connection Timeout")
 
 
-if __name__ == '__main__':
-    reminder_thread = threading.Thread(target=reminder_checker)
-    reminder_thread.daemon = True
-    reminder_thread.start()
-
+if __name__ == "__main__":
     main()
