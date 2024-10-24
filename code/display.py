@@ -202,3 +202,4 @@ def calculate_spendings(queryResult):
         total_text += str(key) + " $" + str(value) + "\n"
     return total_text
 
+
