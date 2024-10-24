@@ -176,6 +176,7 @@ def start_and_menu_command(m):
     bot.send_message(chat_id, text_intro)
     return True
 
+
 # defines how the /new command has to be handled/processed
 @bot.message_handler(commands=["add"])
 def command_add(message):
@@ -191,12 +192,22 @@ def command_add(message):
 def command_add_user(message):
     add_user.register_people(message,bot,user_list)
 
- @bot.message_handler(commands=["delete_user"])
+@bot.message_handler(commands=["delete_user"])
 def command_delete_user(message):
     # Call the delete_user function from the delete_user module
     registered_users=user_list[str(message.chat.id)]["users"]
     delete_user.delete_user(message, bot, user_list)
-       
+
+@bot.message_handler(commands=["add_category"])
+def command_add_category(message):
+    """
+    command_add(message) Takes 1 argument message which contains the message from
+    the user along with the chat ID of the user chat. It then calls add.py to run to execute
+    the add functionality. Commands used to run this: commands=['add']
+    """
+    add_category.run(message, bot)
+# function to fetch expenditure history of the user
+
 # Define a function to periodically check reminders
 def reminder_checker():
     while True:
