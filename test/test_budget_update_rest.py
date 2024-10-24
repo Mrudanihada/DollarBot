@@ -114,7 +114,7 @@ def test_post_category_selection_category_wise_case(mock_telebot, mocker):
     budget_update.helper.getCategoryBudgetByCategory.return_value = 10
     budget_update.helper.isCategoryBudgetByCategoryAvailable.return_value = True
 
-    message = create_message("Food")
+    message = create_message("Grocerries")
     budget_update.post_category_selection(message, mc)
 
     mc.send_message.assert_called_with(11, ANY)
