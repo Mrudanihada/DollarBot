@@ -58,7 +58,7 @@ def test_post_type_selection_failing_case(mock_telebot, mocker):
     budget_update.helper.throw_exception.return_value = True
 
     # budget_update.update_overall_budget = mock.Mock(return_value=True)
-    message = create_message("hello from testing")
+    message = create_message("Hello from Testing")
     budget_update.post_type_selection(message, mc)
     assert mc.send_message.called
     assert budget_update.helper.throw_exception.called
