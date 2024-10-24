@@ -150,7 +150,10 @@ def handle_menu_command(message):
         print('Setting reminder')
         reminder.run(message, bot)
 
-
+@bot.message_handler(commands=["add_user"])
+def command_add_user(message):
+    add_user.register_people(message,bot,user_list)
+    
 # Define a function to periodically check reminders
 def reminder_checker():
     while True:
