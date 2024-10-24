@@ -107,7 +107,7 @@ def test_post_amount_input_working_withdata_chatid(mock_telebot, mocker):
 def test_add_user_record_nonworking(mocker):
     mocker.patch.object(add, "helper")
     add.helper.read_json.return_value = {}
-    addeduserrecord = add.add_user_record(create_user_list(), "record : test",'11',
+    addeduserrecord = add.add_user_record(create_user_list(), "record : test",'1',
                                           "{},{},{}".format('17-Oct-2023 13:23', 'Food', '40'),40,['User1','User2'],'User1')
     assert addeduserrecord
 
@@ -115,7 +115,7 @@ def test_add_user_record_working(mocker):
     MOCK_USER_DATA = create_user_list()
     mocker.patch.object(add, "helper")
     add.helper.read_json.return_value = MOCK_USER_DATA
-    addeduserrecord = add.add_user_record(create_user_list(), "record : test",'11',
+    addeduserrecord = add.add_user_record(create_user_list(), "record : test",'1',
                                           "{},{},{}".format('17-Oct-2023 13:23', 'Food', '40'),40,['User1','User2'],'User1')
     if len(MOCK_USER_DATA) + 1 == len(addeduserrecord):
         assert True
