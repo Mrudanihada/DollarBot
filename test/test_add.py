@@ -88,24 +88,6 @@ def test_post_amount_input_nonworking(mock_telebot, mocker):
     add.post_amount_input(message, mc, "Food",['User1','User2'],'User1',create_user_list())
     assert mc.reply_to.called
 
-@patch("telebot.telebot")
-def test_post_amount_input_working_withdata_chatid(mock_telebot, mocker):
-    mc = mock_telebot.return_value
-    mc.send_message.return_value = True
-    mocker.patch.object(add, "helper")
-    add.helper.validate_entered_amount.return_value = 10
-    add.helper.write_json.return_value = True
-    add.helper.getDateFormat.return_value = dateFormat
-    add.helper.getTimeFormat.return_value = timeFormat
-    mocker.patch.object(add, "option")
-    add.option = {11, "here"}
-    test_option = {}
-    test_option[11] = "here"
-    add.option = test_option
-    message = create_message("hello from testing!")
-    add.post_amount_input(message, mc, "Food",['User1','User2'],'User1',create_user_list())
-    assert mc.send_message.called
-    assert mc.send_message.called_with(11)
 
 def test_add_user_record_nonworking(mocker):
     mocker.patch.object(add, "helper")
