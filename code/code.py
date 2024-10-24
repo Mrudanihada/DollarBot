@@ -27,128 +27,165 @@ SOFTWARE.
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import logging
-import telebot
 import time
+from datetime import datetime
+import telebot
+from jproperties import Properties
 import helper
 import edit
 import history
+import pdf
 import display
-from reminder import check_reminders
 import estimate
 import delete
 import add
-import add_balance
-import budget
-import category
-import download_csv
-import download_pdf
-import email_history
-import add_recurring
+import add_category
 import delete_expense
-import account
-from datetime import datetime
-from jproperties import Properties
-from telebot import types
-import reminder
-from datetime import datetime, time
-import threading
-import time
+import send_mail
+import budget
+import csvfile
+import add_user
+import delete_user
 
 configs = Properties()
 
-with open('user.properties', 'rb') as read_prop:
+with open("user.properties", "rb") as read_prop:
     configs.load(read_prop)
-
-api_token = str(configs.get('api_token').data)
+user_list = helper.read_json()
+api_token = str(configs.get("api_token").data)
 
 bot = telebot.TeleBot(api_token)
 
 telebot.logger.setLevel(logging.INFO)
 
-# Define listener for requests by user
-def listener(user_requests):
-    for req in user_requests:
-        if req.content_type == 'text':
-            print("{} name:{} chat_id:{} \nmessage: {}\n".format(
-                str(datetime.now()), str(req.chat.first_name), str(req.chat.id), str(req.text)))
+option = {}
 
+# === Documentation of code.py ===
+
+# Define listener for requests by user
+
+
+def listener(user_requests):
+    """
+    listener(user_requests): Takes 1 argument user_requests and logs all user
+    interaction with the bot including all bot commands run and any other issue logs.
+    """
+    for req in user_requests:
+        if req.content_type == "text":
+            print(
+                "{} name:{} chat_id:{} \nmessage: {}\n".format(
+                    str(datetime.now()),
+                    str(req.chat.first_name),
+                    str(req.chat.id),
+                    str(req.text),
+                )
+            )
+
+    message = (
+        ("Sorry, I can't understand messages yet :/\n"
+         "I can only understand commands that start with /. \n\n"
+         "Type /faq or /help if you are stuck.")
+    )
+
+    try:
+        helper.read_json()
+        global user_list
+        chat_id = user_requests[0].chat.id
+
+        if user_requests[0].text[0] != "/":
+            bot.send_message(chat_id, message)
+    except Exception:
+        pass
 
 bot.set_update_listener(listener)
 
 
-# Define your list of commands and descriptions
-menu_commands = [
-    ("add_balance", "Add balance to a specific account"),
-    ("add", "Record/Add a new spending"),
-    ("add_recurring", "Record the recurring expenses"),
-    ("display", "Show sum of expenditure"),
-    ("estimate", "Show an estimate of expenditure"),
-    ("history", "Display spending history"),
-    ("delete", "Clear/Erase your records"),
-    ("delete_all", "Clear/Erase all your records"),
-    ("edit", "Edit/Change spending details"),
-    ("budget", "Add/Update/View/Delete budget"),
-    ("category", "Add/Delete/Show custom categories in telegram bot"),
-    ("csv", "To download your history in csv format"),
-    ("pdf", "Generates a PDF file containing the user's expense history plot"),
-    ("email_history", "your spend history will be sent to provided email address"),
-    ("set_reminder", "Create a reminder for your purchases or bills"),
-    ("select_expenses_account", "Select account to use for expenses")
-]
+@bot.message_handler(commands=["help"])
+def help(m):
 
-bot.set_my_commands([
-    types.BotCommand(command=command, description=description) for command, description in menu_commands
-])
+    helper.read_json()
+    global user_list
+    chat_id = m.chat.id
 
-# Define a function to handle the /start and /menu commands
-@bot.message_handler(commands=['start', 'menu'])
-def start_and_menu_command(message):
-    chat_id = message.chat.id
-    text_intro = "Welcome to MyDollarBot! Please select an option:"
+    message = "Here are the commands you can use: \n"
+    commands = helper.getCommands()
+    for c in commands:
+        message += "/" + c + ", "
+    message += "\nUse /menu for detailed instructions about these commands."
+    bot.send_message(chat_id, message)
 
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-    for command, _ in menu_commands:
-        markup.add(types.KeyboardButton(f'/{command}'))
 
-    bot.send_message(chat_id, text_intro, reply_markup=markup)
+@bot.message_handler(commands=["faq"])
+def faq(m):
 
-# Define command handlers for each menu option
-@bot.message_handler(commands=[command for command, _ in menu_commands])
-def handle_menu_command(message):
-    command = message.text[1:]  # Remove the '/' character from the command
-    if command == "add":
-        add.run(message, bot)
-    elif command == "add_balance":
-        add_balance.run(message, bot)
-    elif command == "display":
-        display.run(message, bot)
-    elif command == 'estimate':
-        estimate.run(message, bot)
-    elif command == 'add_recurring':
-        add_recurring.run(message, bot)
-    elif command == 'delete_all':
-        delete.run(message, bot)
-    elif command == 'delete':
-        delete_expense.run(message, bot)
-    elif command == 'budget':
-        budget.run(message, bot)
-    elif command == 'edit':
-        edit.run(message, bot)
-    elif command == 'history':
-        history.run(message, bot)
-    elif command == 'category':
-        category.run(message, bot)
-    elif command == 'csv':
-        download_csv.run(message, bot)
-    elif command == 'email_history':
-        email_history.run(message, bot)
-    elif command == 'select_expenses_account':
-        account.run(message, bot)
-    elif command == 'pdf':
-        download_pdf.run(message, bot)
-    elif command == 'set_reminder':
-        print('Setting reminder')
-        reminder.run(message, bot)
+    helper.read_json()
+    global user_list
+    chat_id = m.chat.id
+
+    faq_message = (
+        ('"What does this bot do?"\n'
+         ">> DollarBot lets you manage your expenses so you can always stay on top of them! \n\n"
+         '"How can I add an epxense?" \n'
+         ">> Type /add_category, then add a category for the expense. \n\n"
+         ">> Type /add_category, then select a category to type the expense. \n\n"
+         '"Can I see history of my expenses?" \n'
+         ">> Yes! Use /display to get a graphical display, or/history to view detailed summary.\n\n"
+         '"I added an incorrect expense. How can I edit it?"\n'
+         ">> Use /edit command. \n\n"
+         '"Can I check if my expenses have exceeded budget?"\n'
+         ">> Yes! Use /budget and then select the view category. \n\n")
+    )
+    bot.send_message(chat_id, faq_message)
+
+
+# defines how the /start and /help commands have to be handled/processed
+@bot.message_handler(commands=["start", "menu"])
+def start_and_menu_command(m):
+    """
+    start_and_menu_command(m): Prints out the the main menu displaying the features that the
+    bot offers and the corresponding commands to be run from the Telegram UI to use these features.
+    Commands used to run this: commands=['start', 'menu']
+    """
+    global user_list
+    user_list = helper.read_json()
+    chat_id = m.chat.id
+    print(user_list)
+    if str(chat_id) not in user_list:
+        user_list[str(chat_id)] = helper.createNewUserRecord(m)
+
+
+
+    # print('receieved start or menu command.')
+    # text_into = "Welcome to the Dollar Bot!"
+
+    text_intro = (
+        ("Welcome to the Dollar Bot! \n"
+         "DollarBot can track all your expenses with simple and easy to use commands :) \n"
+         "Here is the complete menu. \n\n")
+    )
+    # "Type /faq or /help to get stated."
+
+    commands = helper.getCommands()
+    for (
+        c
+    ) in (
+        commands
+    ):  # generate help text out of the commands dictionary defined at the top
+        text_intro += "/" + c + ": "
+        text_intro += commands[c] + "\n\n"
+    bot.send_message(chat_id, text_intro)
+    return True
+
+# defines how the /new command has to be handled/processed
+@bot.message_handler(commands=["add"])
+def command_add(message):
+    """
+    command_add(message) Takes 1 argument message which contains the message from
+    the user along with the chat ID of the user chat. It then calls add.py to run to execute
+    the add functionality. Commands used to run this: commands=['add']
+    """
+    add.run(message, bot)
+
 
 @bot.message_handler(commands=["add_user"])
 def command_add_user(message):
