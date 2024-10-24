@@ -216,7 +216,15 @@ def command_pdf(message):
     """
     pdf.run(message, bot)
 
-
+@bot.message_handler(commands=["pdf"])
+def command_pdf(message):
+    """
+    command_history(message): Takes 1 argument message which contains the message from
+    the user along with the chat ID of the user chat. It then calls pdf.py to run to execute
+    the add functionality. Commands used to run this: commands=['pdf']
+    """
+    pdf.run(message, bot)
+    
 @bot.message_handler(commands=["csv"])
 def command_csv(message):
     """
