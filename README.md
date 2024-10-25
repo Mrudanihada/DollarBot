@@ -39,25 +39,22 @@ This bot has following functionalities:
 - Display your spending history
 - Clear/Erase all your records
 - Edit/Change any spending details if you wish to
-- Recurring expense:
-  Add a recurring expense that adds a certain amount every month to the user's spending, for any given category.
+- Add a group expense and split it amoung members
+- Efficiently track owings of multi-users
 - Custom category:
   User can add a new category and delete an existing category as per the needs
 - Budgeting:
   User can see the budget value for the total expense and/or for each of the existing categories in the /display function
 - Better visualization:
-  Added pie charts, bar graphs with and without budget lines for the user to have a look at the spending history in a better manner
-  Added bar graph in the /history command to see spending across different categories
+  Added bar graphs with and without budget lines for the user to have a look at the spending history in a better manner
+  Added bar graph in the /display command to see spending across different categories
   User can see the daily and monthly expenses for spending history
 - Delete particular expenses.
-- Set a daily reminder to track your expenses for either the current day or the current month.
-- Menu button to improve the UI.
+- Generate sleek PDF expenditure reports for a comprehensive overview.
+- Set a daily notifier to track your expenses for either the current day or the current month.
+- Help button to improve the UI.
 
-## What's new in V2.0!!
-- Maintain two types of accounts for spending purposes.
-  - Checking Account
-  - Savings Account
-- Change type of account before making a purchase.
+## What's new in V3.0!!
 - Log spending expenses and balances in multiple currencies (USD, INR, GBP, EUR, CAD, and JPY).
 - Ability to add new or update overall/category-wise budget in multiple currencies.
 - Get alerts when your balance falls below a threshold value.
