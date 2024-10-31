@@ -247,7 +247,7 @@ As a contributor, we have tried to make the system as decoupled as possible so t
 
 ### Phase 3
 
-- [x] multi-user expense tracking so as to manage shared costs
+- [x] Multi-user expense tracking so as to manage shared costs
 - [x] See the owings so as to get an  idea about who has to give how much to one another
 - [x] Get notified for all your expense activities
 - [x] Emailing detailed expense history to an entered email address
@@ -261,10 +261,12 @@ As a contributor, we have tried to make the system as decoupled as possible so t
 
 ### Future Enhancements
 
-- [ ] Adding a more robust cloud database
-- [ ] Aggregation of an AI/ML based estimator that takes into account inflation
+- [ ] Adding a more robust cloud database for instance, MongoDB
+- [ ] Aggregation of an AI/ML based prediction model that can estimate expenses
 - [ ] Improve User Interface design
-- [ ] Ability to store pictures of physical bills tied to expenses for user reference
+- [ ] Ability to capture expenses from images of physical bills using Computer Vision and OpenCV
+- [ ] Add more data visualisation charts like piechart, line graphs etc.
+- [ ] Add currency converter tool to aid smooth expense tracking for people living in different parts of the world
 
  ### Link to Project Board: [DollarBot Project Board](https://github.com/users/ymdatta/projects/3)
 
