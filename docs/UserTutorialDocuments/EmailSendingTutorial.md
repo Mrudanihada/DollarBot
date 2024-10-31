@@ -14,5 +14,6 @@
 
 4. You can check your email for the file with the necessary expense data!!
 
+   ![image](https://github.com/user-attachments/assets/16462ba5-78dd-45fd-b8d3-c34c8d507b25)
 
 
