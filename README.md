@@ -280,11 +280,9 @@ By contributing to DollarBot, you agree that your contributions will be licensed
 
 ## :handshake: Contributors
 
-(in alphabetical order)
-
-1. Jamnesh Patel (jpatel42@ncsu.edu)
+1. Parth Parikh (pparikh2@ncsu.edu)
 2. Mrudani Hada (mhada2@ncsu.edu)
-3. Parth Parikh (pparikh2@ncsu.edu)
+3. Jamnesh Patel (jpatel42@ncsu.edu)
 
 ## Support
 
