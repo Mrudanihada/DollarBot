@@ -4,7 +4,7 @@
 ![Style Checker](https://github.com/ymdatta/DollarBot/actions/workflows/styleChecker.yml/badge.svg)
 [![Platform](https://img.shields.io/badge/Platform-Telegram-blue)](https://desktop.telegram.org/)
 ![GitHub](https://img.shields.io/badge/Language-Python-blue.svg)
-[![GitHub contributors](https://img.shields.io/github/contributors/ymdatta/DollarBot)
+[![GitHub contributors](https://img.shields.io/github/contributors/ymdatta/DollarBot)](https://github.com/rrajpuro/DollarBot/graphs/contributors)
 [![DOI](https://zenodo.org/badge/877556456.svg)](https://doi.org/10.5281/zenodo.14019202)
 [![Build Status](https://app.travis-ci.com/sak007/MyDollarBot-BOTGo.svg?branch=main)](https://app.travis-ci.com/github/sak007/MyDollarBot-BOTGo)
 [![codecov](https://codecov.io/gh/sak007/MyDollarBot-BOTGo/branch/main/graph/badge.svg?token=5AYMR8MNMP)](https://codecov.io/gh/sak007/MyDollarBot-BOTGo)
@@ -60,6 +60,7 @@ This bot has following functionalities:
 - Get notified for all your expense activities
 - Email detailed expense history, showing payer, amounts owed, and balances
 - Enhanced csv for ml application
+- Budgets more simplified - Now can Add, Update, View, Delete Overall Budgets and Category Wise Budgets
 - Provided PDF for 2 functionalities - Expense Tracking & Owings Tracking 
 - View an intuitive, user-friendly history for easy expense tracking clarity
 - Detailed documentation for each code file
@@ -186,16 +187,19 @@ coverage report
 We have tried to make this application (bot) as easy as possible. You can use this bot to manage and track you daily expenses and not worry about loosing track of your expenses. As we also have given in a functionality of graphing and plotting and history of expenses, it becomes easy for the user to track expenses.
 To make your experience even better, we have added User Tutorials for all the basic operations you can perform with DollarBot!!
 Here you go:
-- [Learn to add Balance!!](https://github.com/r-kala/DollarBot/blob/main/docs/UserTutorialDocuments/AddBalanceTutorial.md)
-- [Learn to add Expenses!!](https://github.com/ymdatta/DollarBot/blob/main/docs/UserTutorialDocuments/AddExpenseTutorial.md)
-- [Learn to add Recurring Expenses!!](https://github.com/ymdatta/DollarBot/blob/main/docs/UserTutorialDocuments/AddRecurringExpenseTutorial.md)
-- [Learn to display Expense Data with Graphs!!](https://github.com/ymdatta/DollarBot/blob/main/docs/UserTutorialDocuments/DisplayTutorial.md)
-- [Learn to download Expense History Data as CSV!!](https://github.com/ymdatta/DollarBot/blob/main/docs/UserTutorialDocuments/DownloadCSV.md)
-- [Learn to get detailed Expense Data via Email!!](https://github.com/ymdatta/DollarBot/blob/main/docs/UserTutorialDocuments/EmailSpendingTutorial.md)
-- [Learn to estimate your future daily/monthly Expenses!!](https://github.com/ymdatta/DollarBot/blob/main/docs/UserTutorialDocuments/EstimateExpenseTutorial.md)
-- [Learn to access your detailed Expense History!!](https://github.com/ymdatta/DollarBot/blob/main/docs/UserTutorialDocuments/ExpenseHistory.md)
-- [Learn to set Expense Reminders!!](https://github.com/ymdatta/DollarBot/blob/main/docs/UserTutorialDocuments/SetReminderTutorial.md)
-
+- [Learn to add User!!](https://github.com/Mrudanihada/DollarBot/blob/Updated_2.0/docs/UserTutorialDocuments/AddUser.md)
+- [Learn to add Budget!!](https://github.com/Mrudanihada/DollarBot/blob/Updated_2.0/docs/UserTutorialDocuments/BudgetTutorial.md)
+- [Learn to add Expenses!!](https://github.com/Mrudanihada/DollarBot/blob/Updated_2.0/docs/UserTutorialDocuments/AddExpenseTutorial.md)
+- [Learn to edit Expenses!!](https://github.com/Mrudanihada/DollarBot/blob/Updated_2.0/docs/UserTutorialDocuments/EditExpenseTutorial.md)
+- [Learn to delete Expenses!!](https://github.com/Mrudanihada/DollarBot/blob/Updated_2.0/docs/UserTutorialDocuments/DeleteExpenseTutorial.md)
+- [Learn to add Category!!](https://github.com/Mrudanihada/DollarBot/blob/Updated_2.0/docs/UserTutorialDocuments/AddCategory.md)
+- [Learn to display Expense Data with Graphs!!](https://github.com/Mrudanihada/DollarBot/blob/Updated_2.0/docs/UserTutorialDocuments/DisplayTutorial.md)
+- [Learn to download Expense History & Owings Data as CSV](https://github.com/Mrudanihada/DollarBot/blob/Updated_2.0/docs/UserTutorialDocuments/DownloadCSVTutorial.md)
+- [Learn to download Expense History & Owings Data as PDF!!](https://github.com/Mrudanihada/DollarBot/blob/Updated_2.0/docs/UserTutorialDocuments/DownloadPDFTutorial.md) 
+- [Learn to get detailed Expense Data via Email!!](https://github.com/Mrudanihada/DollarBot/blob/Updated_2.0/docs/UserTutorialDocuments/EmailSendingTutorial.md)
+- [Learn to estimate your future daily/monthly Expenses!!](https://github.com/Mrudanihada/DollarBot/blob/Updated_2.0/docs/UserTutorialDocuments/EstimateExpenseTutorial.md)
+- [Learn to access your detailed Expense History and delete it!!](https://github.com/Mrudanihada/DollarBot/blob/Updated_2.0/docs/UserTutorialDocuments/ExpenseHistoryTutorial.md)
+- [Learn to delete Users!!](https://github.com/Mrudanihada/DollarBot/blob/Updated_2.0/docs/UserTutorialDocuments/DeleteUserTutorial..md)
 Link to feedback on DollarBot usage from users: [DollarBot Feedback Details](https://docs.google.com/document/d/1-2Ymohz238M43vACZSaMJzciNv_69CRBKFgrELbd-Bg/edit)
 
 ## Configuration
@@ -251,7 +255,8 @@ As a contributor, we have tried to make the system as decoupled as possible so t
 - [x] See the owings so as to get an  idea about who has to give how much to one another
 - [x] Get notified for all your expense activities
 - [x] Emailing detailed expense history to an entered email address
-- [ ] Edit function works well editing existing expense record as well as how it is shared among teammates
+- [x] Edit function works well editing existing expense record as well as how it is shared among teammates
+- [x] Budgets more simplified - Now can Add, Update, View, Delete Overall Budgets and Category Wise Budgets
 - [x] Enhanced csv for ml application
 - [x] Provided PDF for 2 functionalities - Expense Tracking & Owings Tracking 
 - [x] View of an intuitive, user-friendly history for easy expense clarity
@@ -269,7 +274,6 @@ As a contributor, we have tried to make the system as decoupled as possible so t
 - [ ] Add more data visualisation charts like piechart, line graphs etc.
 - [ ] Add currency converter tool to aid smooth expense tracking for people living in different parts of the world
 
- ### Link to Project Board: [DollarBot Project Board](https://github.com/users/ymdatta/projects/3)
 
 ## Contributing
 
