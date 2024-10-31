@@ -15,7 +15,7 @@
 ![Fork](https://img.shields.io/github/forks/deekay2310/MyDollarBot?style=social)
 <hr>
 
-# 💰 DollarBot v2.0 - Budgeting	 On The Go 💰
+# 💰 DollarBot v3.0 - Budgeting	 On The Go 💰
 
 <hr>
 <p align="center">
@@ -66,12 +66,7 @@ This bot has following functionalities:
 - New and improved test cases for the code base
 
 ## Use Case
-*Objective:* To streamline the process of tracking and sharing expenses among multiple users within a group, ensuring clear accountability and transparency.
-
-*Actors:*
-
-Primary Users: Group members (e.g., friends, family, coworkers) who want to track shared expenses.
-DollarBot: The Telegram bot that assists with recording and managing expenses.
+To streamline the process of tracking and sharing expenses among multiple users within a group, ensuring clear accountability and transparency.
 
 ## Punch Line
 
@@ -218,7 +213,7 @@ As a contributor, we have tried to make the system as decoupled as possible so t
 1) Ensure that you have a valid bot token. You can obtain a token by creating a new bot on Telegram through the BotFather.
 2) Double-check that the token is correctly inserted into your bot's code or configuration.
 3) Make sure your bot has the necessary permissions to perform the actions you've programmed it for.
-4) If the issue still persists, please consider writing us at dollarbot38@googlegroups.com and we will get back to you as soon as possible.
+4) If the issue still persists, please consider writing us at pmjse03@gmail.com and we will get back to you as soon as possible.
 5) You're also free to report a bug in our repository and clearly stating the issue that you're facing. Please make sure to follow the guidelines mentioned in [CONTRIBUTING.md](https://github.com/ymdatta/DollarBot/blob/main/CONTRIBUTING.md)
 
 ## Roadmap
