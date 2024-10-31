@@ -251,6 +251,7 @@ As a contributor, we have tried to make the system as decoupled as possible so t
 - [x] See the owings so as to get an  idea about who has to give how much to one another
 - [x] Get notified for all your expense activities
 - [x] Emailing detailed expense history to an entered email address
+- [ ] Edit function works well editing existing expense record as well as how it is shared among teammates
 - [x] Enhanced csv for ml application
 - [x] Provided PDF for 2 functionalities - Expense Tracking & Owings Tracking 
 - [x] View of an intuitive, user-friendly history for easy expense clarity
