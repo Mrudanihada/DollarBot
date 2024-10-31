@@ -214,7 +214,7 @@ As a contributor, we have tried to make the system as decoupled as possible so t
 2) Double-check that the token is correctly inserted into your bot's code or configuration.
 3) Make sure your bot has the necessary permissions to perform the actions you've programmed it for.
 4) If the issue still persists, please consider writing us at pmjse03@gmail.com and we will get back to you as soon as possible.
-5) You're also free to report a bug in our repository and clearly stating the issue that you're facing. Please make sure to follow the guidelines mentioned in [CONTRIBUTING.md](https://github.com/ymdatta/DollarBot/blob/main/CONTRIBUTING.md)
+5) You're also free to report a bug in our repository and clearly stating the issue that you're facing. Please make sure to follow the guidelines mentioned in [CONTRIBUTING.md](https://github.com/ymdatta/DollarBot/blob/Updated_2.0/CONTRIBUTING.md)
 
 ## Roadmap
 
