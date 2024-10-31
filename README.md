@@ -51,26 +51,25 @@ This bot has following functionalities:
   User can see the daily and monthly expenses for spending history
 - Delete particular expenses.
 - Generate sleek PDF expenditure reports for a comprehensive overview.
-- Set a daily notifier to track your expenses for either the current day or the current month.
+- Set a daily notifier to track your expenses for either the current day or the current month
 - Help button to improve the UI.
 
-## What's new in V3.0!!
-- Log spending expenses and balances in multiple currencies (USD, INR, GBP, EUR, CAD, and JPY).
-- Ability to add new or update overall/category-wise budget in multiple currencies.
-- Get alerts when your balance falls below a threshold value.
-- Get errors if you are spending more money than what's available in your account.
-- Download your expenses record in CSV, PDF format on the go.
-- Send your expenses record to any email address in CSV format.
-- User studies of the application.
-- Detailed documentation for each code file.
-- New and improved test cases for the code base.
+## What's new in our version!!
+- multi-user expense tracking and manage shared costs with ease
+- See exactly who owes whom and settle up seamlessly
+- Get notified for all your expense activities
+- Email detailed expense history, showing payer, amounts owed, and balances
+- enhanced csv & pdf for ml application
+- View an intuitive, user-friendly history for easy expense tracking clarity
+- Detailed documentation for each code file
+- New and improved test cases for the code base
 
 ## Use Case
 * One can use DollarBot to save time one would otherwise spend manually inputting numbers into a spreadsheet -- all the while encouraging you to spend less and save more with budgeting feature. 
 
 ## Punch Line
 
-* "If you can't measure it, you can't improve it." - Peter Drucker
+* "" - Peter Drucker
 
   Use DollarBot to measure your expenses and spend wisely.
 
