@@ -24,7 +24,7 @@ Follow the set of guidelines below to contribute to DollarBot!
 Please note that we have a [Code of Conduct](CODE_OF_CONDUCT.md) that all contributors are expected to follow. It ensures that our community is welcoming and inclusive.
 
 By participating, you are expected to uphold this code. Please report unacceptable behavior to pmjse03@gmail.com
-(This project is a part of CSC510, Software Engineering at NC State for Fall'23, Group #38)
+(This project is a part of CSC510, Software Engineering at NC State for Fall'24, Group #25)
 
 ## Getting Started
 
