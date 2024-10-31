@@ -10,7 +10,7 @@
 
 3. Now on selecting all expenses You will be prompted the format you want to display in Day or Month.
 
-   
+   ![image](https://github.com/user-attachments/assets/37fcc8ed-f5be-48e5-918e-1ebb5bd89943)
 
 4. On selecting the acurate option will be calculated and given a bar plot showing the category wise 
    spending and the budget if entered for a category.
