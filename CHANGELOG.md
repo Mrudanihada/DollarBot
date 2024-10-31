@@ -1,4 +1,15 @@
 ## Changelogs
+### v3.0
+
+ 1. multi-user expense tracking and manage shared costs with ease
+ 2.See exactly who owes whom and settle up seamlessly
+ 3. Get notified for all your expense activities
+ 4. Email detailed expense history, showing payer, amounts owed, and balances
+ 5. Enhanced csv for ml application
+ 6. Provided PDF for 2 functionalities - Expense Tracking & Owings Tracking 
+ 7. View an intuitive, user-friendly history for easy expense tracking clarity
+ 8. Detailed documentation for each code file
+ 9. New and improved test cases for the code base
 
 ### v2.0
 
