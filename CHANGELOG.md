@@ -2,7 +2,7 @@
 ### v3.0
 
  1. Multi-user expense tracking and manage shared costs with ease
- 2.See exactly who owes whom and settle up seamlessly
+ 2. See exactly who owes whom and settle up seamlessly
  3. Get notified for all your expense activities
  4. Email detailed expense history, showing payer, amounts owed, and balances
  5. Enhanced csv for ml application
