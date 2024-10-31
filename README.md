@@ -67,7 +67,9 @@ This bot has following functionalities:
 
 ## Use Case
 *Objective:* To streamline the process of tracking and sharing expenses among multiple users within a group, ensuring clear accountability and transparency.
+
 *Actors:*
+
 Primary Users: Group members (e.g., friends, family, coworkers) who want to track shared expenses.
 DollarBot: The Telegram bot that assists with recording and managing expenses.
 
@@ -247,6 +249,20 @@ As a contributor, we have tried to make the system as decoupled as possible so t
 - [x] User studies of the application.
 - [x] Detailed documentation for each code file.
 - [x] New and improved test cases for the code base.
+
+### Phase 3
+
+- [x] multi-user expense tracking so as to manage shared costs
+- [x] See the owings so as to get an  idea about who has to give how much to one another
+- [x] Get notified for all your expense activities
+- Email detailed expense history, showing payer, amounts owed, and balances
+- Enhanced csv for ml application
+- Provided PDF for 2 functionalities - Expense Tracking & Owings Tracking 
+- View an intuitive, user-friendly history for easy expense tracking clarity
+- Detailed documentation for each code file
+- New and improved test cases for the code base
+
+
 
 ### Future Enhancements
 
