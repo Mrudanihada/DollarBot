@@ -55,7 +55,7 @@ This bot has following functionalities:
 - Help button to improve the UI.
 
 ## What's new in our version!!
-- multi-user expense tracking and manage shared costs with ease
+- Multi-user expense tracking and manage shared costs with ease
 - See exactly who owes whom and settle up seamlessly
 - Get notified for all your expense activities
 - Email detailed expense history, showing payer, amounts owed, and balances
