@@ -10,8 +10,9 @@
     <img width="1192" alt="Screenshot 2024-10-31 at 1 17 30 PM" src="https://github.com/user-attachments/assets/44ae4428-5c5d-47f6-8ce3-6b8331fd0651">
 
 
-3.  After you have entered a name, the bot will ask you to  enter another name or to finish the registration.
+3.  After you have entered a name, the bot will ask you to  enter another name or to finish the                 registration.
 
+    ![image](https://github.com/user-attachments/assets/3766e5a9-7305-4f1f-9855-cefe6f667dc7)
 
 4. After you type finish registration, You are all done!! Your users sharing the expense will be shown.
    ![image](https://github.com/user-attachments/assets/2c74d3e8-e1d1-4f06-b40a-1bd48604f6c0)
