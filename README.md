@@ -255,24 +255,21 @@ As a contributor, we have tried to make the system as decoupled as possible so t
 - [x] multi-user expense tracking so as to manage shared costs
 - [x] See the owings so as to get an  idea about who has to give how much to one another
 - [x] Get notified for all your expense activities
-- Email detailed expense history, showing payer, amounts owed, and balances
-- Enhanced csv for ml application
-- Provided PDF for 2 functionalities - Expense Tracking & Owings Tracking 
-- View an intuitive, user-friendly history for easy expense tracking clarity
-- Detailed documentation for each code file
-- New and improved test cases for the code base
+- [x] Emailing detailed expense history to an entered email address
+- [x] Enhanced csv for ml application
+- [x] Provided PDF for 2 functionalities - Expense Tracking & Owings Tracking 
+- [x] View of an intuitive, user-friendly history for easy expense clarity
+- [x] Detailed documentation for each code file
+- [x] New and improved test cases for the code base
 
 
 
 ### Future Enhancements
 
-- [ ] Ability to add expenses of multiple users.
-- [ ] Ability to manage expenses among multiple users to calculate aggregate sum owed.
-- [ ] Adding a more robust cloud database.
-- [ ] Aggregation of an AI/ML based estimator that takes into account inflation.
-- [ ] Improve User Interface design.
-- [ ] Adding normal conversational abilities to the chatbot.
-- [ ] Ability to store pictures of physical bills tied to expenses for user reference.
+- [ ] Adding a more robust cloud database
+- [ ] Aggregation of an AI/ML based estimator that takes into account inflation
+- [ ] Improve User Interface design
+- [ ] Ability to store pictures of physical bills tied to expenses for user reference
 
  ### Link to Project Board: [DollarBot Project Board](https://github.com/users/ymdatta/projects/3)
 
@@ -290,13 +287,13 @@ By contributing to DollarBot, you agree that your contributions will be licensed
 
 (in alphabetical order)
 
-1. Mohan Yelugoti (myelugo@ncsu.edu)
-2. Rishabh Kala (rkala@ncsu.edu)
-3. Sreehith Yachamaneni (syacham@ncsu.edu)
+1. Jamnesh Patel (jpatel42@ncsu.edu)
+2. Mrudani Hada (mhada2@ncsu.edu)
+3. Parth Parikh (pparikh2@ncsu.edu)
 
 ## Support
 
-Please feel free to reach us at <dollarbot38@googlegroups.com> if you face any issues or for giving feedback in general. 
+Please feel free to reach us at <pmjse03@gmail.com> if you face any issues or for giving feedback in general. 
 If you have used our Dollar Bot, feel free to give your feedback https://forms.gle/W354pePL3xw74jj76
 
 ## FAQs
