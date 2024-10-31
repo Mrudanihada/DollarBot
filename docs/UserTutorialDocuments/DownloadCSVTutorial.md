@@ -10,6 +10,7 @@
 
 3. You can export the file and see your expense data!!
 
-   ![image](https://github.com/user-attachments/assets/0cd91ecb-b94d-40c0-aeea-bee4245224ff)
+   ![image](https://github.com/user-attachments/assets/9bc9006f-c0cd-41b5-836d-2ec87976a005)
+
 
 
