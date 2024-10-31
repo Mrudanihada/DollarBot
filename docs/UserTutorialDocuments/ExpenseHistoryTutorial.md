@@ -9,6 +9,11 @@
 
    ![image](https://github.com/user-attachments/assets/1df93140-4cce-4dd3-9132-4d2c111a9530)
 
+3. Now you can delete the history by just typing '/delete' in the chat.
+
+   ![image](https://github.com/user-attachments/assets/cff74b16-0973-4cfe-8302-94cc331035d4)
+
+
 
 
 
