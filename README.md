@@ -59,19 +59,21 @@ This bot has following functionalities:
 - See exactly who owes whom and settle up seamlessly
 - Get notified for all your expense activities
 - Email detailed expense history, showing payer, amounts owed, and balances
-- enhanced csv & pdf for ml application
+- Enhanced csv for ml application
+- Provided PDF for 2 functionalities - Expense Tracking & Owings Tracking 
 - View an intuitive, user-friendly history for easy expense tracking clarity
 - Detailed documentation for each code file
 - New and improved test cases for the code base
 
 ## Use Case
-* One can use DollarBot to save time one would otherwise spend manually inputting numbers into a spreadsheet -- all the while encouraging you to spend less and save more with budgeting feature. 
+*Objective:* To streamline the process of tracking and sharing expenses among multiple users within a group, ensuring clear accountability and transparency.
+*Actors:*
+Primary Users: Group members (e.g., friends, family, coworkers) who want to track shared expenses.
+DollarBot: The Telegram bot that assists with recording and managing expenses.
 
 ## Punch Line
 
-* "" - Peter Drucker
-
-  Use DollarBot to measure your expenses and spend wisely.
+Track Every Penny, Save Every Dollar !!
 
 ## Table of Contents
 
