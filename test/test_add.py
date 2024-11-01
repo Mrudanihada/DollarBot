@@ -6,11 +6,36 @@ from datetime import datetime
 from code import add
 from unittest.mock import MagicMock
 from add import run
+from unittest.mock import ANY
 
 
 dateFormat = "%d-%b-%Y"
 timeFormat = "%H:%M"
 monthFormat = "%b-%Y"
+
+
+@patch("telebot.telebot")
+@patch("add.helper.read_json")
+def test_select_user_with_remaining_users(user_mock, mock_telebot):
+    mc = mock_telebot.return_value
+    user_mock.return_value = create_user_list()
+    mc.send_message.return_value = True
+    
+    message = create_message("User1")
+    owed_by = []
+    user_list = create_user_list()
+    paid_by = None
+    
+    add.select_user(message, mc, owed_by, user_list, paid_by)
+    
+    assert mc.send_message.called
+    mc.send_message.assert_called_with(
+        11,
+        "Select who shares the Expense",
+        reply_markup=ANY
+    )
+
+
 
 @patch("telebot.telebot")
 @patch("add.helper.read_json")
