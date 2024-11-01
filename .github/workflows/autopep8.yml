@@ -1,0 +1,26 @@
+name: Autopep8
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  autopep8:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.13.0-rc.1'
+
+      - name: Install autopep8
+        run: pip install autopep8
+
+      - name: Run autopep8
+        run: autopep8 --in-place --recursive .
