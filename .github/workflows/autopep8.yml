@@ -2,9 +2,9 @@ name: Autopep8
 
 on:
   push:
-    branches: [ main ]
+    branches: [Updated_2.0]
   pull_request:
-    branches: [ main ]
+    branches: [ Updated_2.0]
 
 jobs:
   autopep8:
@@ -17,7 +17,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.13.0-rc.1'
+          python-version: '3.12.1'
 
       - name: Install autopep8
         run: pip install autopep8
