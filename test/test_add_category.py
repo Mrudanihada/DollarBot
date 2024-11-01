@@ -1,5 +1,6 @@
 import unittest
 from unittest.mock import MagicMock, patch
+from code import helper
 from telebot import types
 from code.add_category import run, post_append_spend
 
