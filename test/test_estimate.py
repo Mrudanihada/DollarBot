@@ -181,3 +181,10 @@ def test_calculate_estimate_zero_values(mock_telebot):
     history = ["01-Jan-2024,Food,0.00"]
     result = estimate.calculate_estimate(history, 1)
     assert "Food $0.0" in result    
+
+# 9. Test multiple months of data
+@patch("telebot.telebot")
+def test_calculate_estimate_multiple_months(mock_telebot):
+    history = create_sample_history(60)
+    result = estimate.calculate_estimate(history, 30)
+    assert len(result.split("\n")) > 1    
