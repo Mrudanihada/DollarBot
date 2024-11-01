@@ -188,3 +188,10 @@ def test_calculate_estimate_multiple_months(mock_telebot):
     history = create_sample_history(60)
     result = estimate.calculate_estimate(history, 30)
     assert len(result.split("\n")) > 1    
+
+# 10. Test category name with spaces
+@patch("telebot.telebot")
+def test_category_with_spaces(mock_telebot):
+    history = ["01-Jan-2024,Home Rent,1000.00"]
+    result = estimate.calculate_estimate(history, 1)
+    assert "Home Rent $1000.0" in result    
