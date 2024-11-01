@@ -287,4 +287,15 @@ def test_chat_action_during_calculation(mock_telebot, mocker):
     message.text = "Next month"
     estimate.estimate_total(message, mock_telebot)
     assert mock_telebot.send_chat_action.called
-    assert mock_telebot.send_chat_action.call_args[0][1] == "typing"                                       
+    assert mock_telebot.send_chat_action.call_args[0][1] == "typing"
+
+@patch("telebot.telebot")
+def test_calculate_estimate_negative_values(mock_telebot):
+    history = [
+        "01-Jan-2024,Refund,-50.00",
+        "01-Jan-2024,Food,100.00"
+    ]
+    result = estimate.calculate_estimate(history, 1)
+    assert "Refund $-50.0" in result
+    assert "Food $100.0" in result      
+
