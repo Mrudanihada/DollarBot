@@ -1,31 +1,30 @@
-name: Run tests and upload coverage
+name: CI
 
-on: 
-  push
+on:
+  push:
+    branches:
+      - Updated_2.0
+  pull_request:
 
 jobs:
-  test:
-    name: Run tests and collect coverage
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-            python-version: '3.12.1'
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.12.1'  # Specify your Python version
 
-      - name: Install dependencies
-        run: pip install pytest coverage
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt  # Ensure your dependencies are listed here
 
-      - name: Run tests
-        run: coverage run -m pytest test/
-
-      - name: Upload results to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: Mrudanihada/DollarBot/tree/Updated_2.0
+    - name: Run tests with coverage
+      run: |
+        pip install pytest pytest-cov  # Ensure coverage tools are installed
+        pytest --cov=your_module_name --cov-report=xml  # Adjust as necessary
