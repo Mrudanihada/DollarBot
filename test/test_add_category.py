@@ -1,9 +1,7 @@
 import unittest
 from unittest.mock import MagicMock, patch
-#from code import helper
-#from telebot import types
-from code import add_category 
-from add_category import run, post_append_spend
+from telebot import types
+from code.add_category import run, post_append_spend
 
 class TestAddCategory(unittest.TestCase):
 
