@@ -248,4 +248,13 @@ def test_consistent_category_ordering(mock_telebot):
 def test_very_small_numbers(mock_telebot):
     history = ["01-Jan-2024,Tips,0.01"]
     result = estimate.calculate_estimate(history, 1)
-    assert "Tips $0.01" in result      
+    assert "Tips $0.01" in result 
+
+# 17. Test multiple days estimation
+@patch("telebot.telebot")
+def test_multiple_days_estimation(mock_telebot):
+    history = ["01-Jan-2024,Food,10.00"]
+    for days in [1, 7, 30, 365]:
+        result = estimate.calculate_estimate(history, days)
+        expected = f"Food ${10.00 * days}"
+        assert expected in result         
