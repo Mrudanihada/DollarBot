@@ -299,3 +299,12 @@ def test_calculate_estimate_negative_values(mock_telebot):
     assert "Refund $-50.0" in result
     assert "Food $100.0" in result      
 
+@patch("telebot.telebot")
+def test_multiple_transactions_same_category_same_day(mock_telebot):
+    history = [
+        "01-Jan-2024,Food,10.00",
+        "01-Jan-2024,Food,15.00",
+        "01-Jan-2024,Food,20.00"
+    ]
+    result = estimate.calculate_estimate(history, 1)
+    assert "Food $45.0" in result
