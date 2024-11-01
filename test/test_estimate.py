@@ -150,3 +150,13 @@ def test_calculate_estimate_multiple_categories_same_day(mock_telebot):
     result = estimate.calculate_estimate(history, 1)
     assert "Food $10.5" in result
     assert "Transport $20.0" in result
+
+# 4. Test data spanning multiple days
+@patch("telebot.telebot")
+def test_calculate_estimate_multiple_days(mock_telebot, mocker):
+    history = [
+        "01-Jan-2024,Food,10.50",
+        "02-Jan-2024,Food,15.50"
+    ]
+    result = estimate.calculate_estimate(history, 30)
+    assert "Food $390.0" in result  # (10.50 + 15.50)/2 * 30    
