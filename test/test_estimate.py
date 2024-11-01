@@ -264,4 +264,15 @@ def test_multiple_days_estimation(mock_telebot):
 def test_category_special_characters(mock_telebot):
     history = ["01-Jan-2024,Food & Drinks,30.00"]
     result = estimate.calculate_estimate(history, 1)
-    assert "Food & Drinks $30.0" in result                 
+    assert "Food & Drinks $30.0" in result 
+
+# 19. Test run function keyboard markup
+@patch("telebot.telebot")
+def test_run_keyboard_markup(mock_telebot, mocker):
+    mocker.patch.object(estimate, "helper")
+    estimate.helper.getUserHistory.return_value = create_sample_history(5)
+    estimate.helper.getSpendEstimateOptions.return_value = ["Next day", "Next month"]
+    message = create_message("test")
+    estimate.run(message, mock_telebot)
+    assert isinstance(mock_telebot.reply_to.call_args[1]['reply_markup'], 
+                     types.ReplyKeyboardMarkup)                    
