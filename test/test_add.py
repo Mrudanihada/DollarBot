@@ -35,6 +35,60 @@ def test_select_user_with_remaining_users(user_mock, mock_telebot):
         reply_markup=ANY
     )
 
+@patch("telebot.telebot")
+def test_add_shared_user_successful(mock_telebot):
+    mc = mock_telebot.return_value
+    mc.reply_to.return_value = True
+    
+    message = create_message("User2")
+    owed_by = ["User1"]
+    user_list = create_user_list()
+    paid_by = "User1"
+    
+    add.add_shared_user(message, mc, owed_by, user_list, paid_by)
+    
+    assert mc.reply_to.called
+    mc.reply_to.assert_called_with(
+        message,
+        "Do you want to add more user to share the expense? Y/N"
+    )
+    
+    assert "User2" in owed_by   
+
+@patch("telebot.telebot")
+def test_user_choice_yes_response(mock_telebot):
+    """
+    Test user_choice function when user responds with 'Y'
+    """
+    mc = mock_telebot.return_value
+    mc.send_message.return_value = True
+    message = create_message("Y")
+    owed_by = ["User1"]
+    user_list = create_user_list()
+    paid_by = "User1"
+    
+    add.user_choice(message, mc, owed_by, user_list, paid_by)
+    
+    assert mc.send_message.called or mc.reply_to.called
+
+@patch("telebot.telebot")
+def test_select_user_no_remaining_users(mock_telebot):
+
+    mc = mock_telebot.return_value
+    mc.send_message.return_value = True
+    
+    message = create_message("User1")
+    
+    user_list = create_user_list()
+    owed_by = []
+    for user in user_list['users']:
+        owed_by.append(user)
+    paid_by = "User1"
+    
+    add.select_user(message, mc, owed_by, user_list, paid_by)
+    
+    assert mc.send_message.called or mc.reply_to.called         
+
 
 
 @patch("telebot.telebot")
