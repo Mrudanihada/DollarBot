@@ -95,7 +95,7 @@ Track Every Penny, Save Every Dollar !!
 - [Code of Conduct](#code-of-conduct)
 
 ## Demo
-[![Link to Demo](https://img.youtube.com/vi/E7EAHumVHhk/0.jpg)](https://drive.google.com/file/d/1la5WZErTosa0H2pqNbv9Xam3WBsTtg_S/view?usp=share_link)
+[![Link to Demo](https://github.com/user-attachments/assets/c31cec85-53e1-49f4-83c2-beee511660c6)](https://drive.google.com/file/d/1la5WZErTosa0H2pqNbv9Xam3WBsTtg_S/view?usp=share_link)
 
 ## Techstack
 
