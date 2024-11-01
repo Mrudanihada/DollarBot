@@ -3,6 +3,20 @@ import json
 from mock import patch
 from telebot import types
 from code import estimate
+import pytest
+from datetime import datetime, timedelta
+
+def create_sample_history(days_back=30, categories=None):
+    if categories is None:
+        categories = ["Food", "Transport", "Entertainment"]
+    history = []
+    base_date = datetime.now()
+    for i in range(days_back):
+        date = base_date - timedelta(days=i)
+        date_str = date.strftime("%d-%b-%Y")
+        for cat in categories:
+            history.append(f"{date_str},${cat},{20+i}")
+    return history
 
 
 @patch("telebot.telebot")
@@ -112,3 +126,17 @@ def test_read_json():
 
     except FileNotFoundError:
         print("---------NO RECORDS FOUND---------")
+
+
+@patch("telebot.telebot")
+def test_calculate_estimate_empty_data(mock_telebot):
+    result = estimate.calculate_estimate([], 1)
+    assert result == ""
+
+# 2. Test single category calculation
+@patch("telebot.telebot")
+def test_calculate_estimate_single_category(mock_telebot):
+    history = ["01-Jan-2024,Food,10.50"]
+    result = estimate.calculate_estimate(history, 1)
+    assert "Food $10.5" in result
+
