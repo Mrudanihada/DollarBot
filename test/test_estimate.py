@@ -174,3 +174,10 @@ def test_calculate_estimate_large_numbers(mock_telebot):
     history = ["01-Jan-2024,Investment,1000000.00"]
     result = estimate.calculate_estimate(history, 1)
     assert "Investment $1000000.0" in result  
+
+# 8. Test zero values
+@patch("telebot.telebot")
+def test_calculate_estimate_zero_values(mock_telebot):
+    history = ["01-Jan-2024,Food,0.00"]
+    result = estimate.calculate_estimate(history, 1)
+    assert "Food $0.0" in result    
