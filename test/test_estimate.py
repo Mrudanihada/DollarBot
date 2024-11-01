@@ -167,3 +167,10 @@ def test_calculate_estimate_decimal_precision(mock_telebot):
     history = ["01-Jan-2024,Food,10.537"]
     result = estimate.calculate_estimate(history, 1)
     assert "Food $10.54" in result    
+
+# 7. Test large numbers
+@patch("telebot.telebot")
+def test_calculate_estimate_large_numbers(mock_telebot):
+    history = ["01-Jan-2024,Investment,1000000.00"]
+    result = estimate.calculate_estimate(history, 1)
+    assert "Investment $1000000.0" in result  
