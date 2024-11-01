@@ -257,4 +257,11 @@ def test_multiple_days_estimation(mock_telebot):
     for days in [1, 7, 30, 365]:
         result = estimate.calculate_estimate(history, days)
         expected = f"Food ${10.00 * days}"
-        assert expected in result         
+        assert expected in result
+
+# 18. Test category name with special characters
+@patch("telebot.telebot")
+def test_category_special_characters(mock_telebot):
+    history = ["01-Jan-2024,Food & Drinks,30.00"]
+    result = estimate.calculate_estimate(history, 1)
+    assert "Food & Drinks $30.0" in result                 
