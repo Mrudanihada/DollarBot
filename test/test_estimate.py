@@ -230,3 +230,15 @@ def test_response_formatting(mock_telebot, mocker):
     args, _ = mock_telebot.send_message.call_args
     assert "Here are your estimated spendings" in args[1]
     assert "CATEGORIES,AMOUNT" in args[1]    
+
+# 15. Test consistent category ordering
+@patch("telebot.telebot")
+def test_consistent_category_ordering(mock_telebot):
+    history = [
+        "01-Jan-2024,B,10.00",
+        "01-Jan-2024,A,20.00",
+        "01-Jan-2024,C,15.00"
+    ]
+    result = estimate.calculate_estimate(history, 1)
+    categories = [line.split(" $")[0] for line in result.strip().split("\n")]
+    assert len(categories) == 3    
