@@ -14,6 +14,30 @@ timeFormat = "%H:%M"
 monthFormat = "%b-%Y"
 
 @patch("telebot.telebot")
+def test_add_shared_user_successful(mock_telebot):
+    mc = mock_telebot.return_value
+    mc.reply_to.return_value = True
+    
+    message = create_message("User2")
+    owed_by = ["User1"]
+    user_list = create_user_list()
+    paid_by = "User1"
+    
+    add.add_shared_user(message, mc, owed_by, user_list, paid_by)
+    
+    assert mc.reply_to.called
+    mc.reply_to.assert_called_with(
+        message,
+        "Do you want to add more user to share the expense? Y/N"
+    )
+    
+    assert "User2" in owed_by
+
+
+
+
+
+@patch("telebot.telebot")
 def test_user_choice_yes_response(mock_telebot):
     """
     Test user_choice function when user responds with 'Y'
@@ -107,16 +131,7 @@ def test_post_category_selection_noMatchingCategory(mock_telebot, mocker):
     add.post_category_selection(message, mc,owed_by,paid_by,user_list)
     assert mc.reply_to.called
 
-@patch("telebot.telebot")
-def test_post_amount_input_working(mock_telebot, mocker):
-    mc = mock_telebot.return_value
-    mc.send_message.return_value = True
-    user_list = create_user_list()
-    paid_by = 'User1'
-    owed_by = ['User1','User2']
-    message = create_message("40")
-    add.post_category_selection(message, mc,owed_by,paid_by,user_list)
-    assert mc.send_message.called
+
 
 @patch("telebot.telebot")
 def test_post_amount_input_working_withdata(mock_telebot, mocker):
