@@ -160,3 +160,10 @@ def test_calculate_estimate_multiple_days(mock_telebot, mocker):
     ]
     result = estimate.calculate_estimate(history, 30)
     assert "Food $390.0" in result  # (10.50 + 15.50)/2 * 30    
+
+# 5. Test with decimal precision
+@patch("telebot.telebot")
+def test_calculate_estimate_decimal_precision(mock_telebot):
+    history = ["01-Jan-2024,Food,10.537"]
+    result = estimate.calculate_estimate(history, 1)
+    assert "Food $10.54" in result    
