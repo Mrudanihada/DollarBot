@@ -15,6 +15,25 @@ monthFormat = "%b-%Y"
 
 
 @patch("telebot.telebot")
+def test_select_user_no_remaining_users(mock_telebot):
+
+    mc = mock_telebot.return_value
+    mc.send_message.return_value = True
+    
+    message = create_message("User1")
+    
+    user_list = create_user_list()
+    owed_by = []
+    for user in user_list['users']:
+        owed_by.append(user)
+    paid_by = "User1"
+    
+    add.select_user(message, mc, owed_by, user_list, paid_by)
+    
+    assert mc.send_message.called or mc.reply_to.called
+
+
+@patch("telebot.telebot")
 @patch("add.helper.read_json")
 def test_select_user_with_remaining_users(user_mock, mock_telebot):
     mc = mock_telebot.return_value
