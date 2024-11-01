@@ -2,6 +2,7 @@
 
 ![MIT license](https://img.shields.io/badge/License-MIT-green.svg)
 ![Python Version](https://img.shields.io/badge/Python-3.12-green)
+![Telegram Bot Version](https://img.shields.io/badge/telegram-v11.3-blue)
 [![Style Checker](https://github.com/Mrudanihada/DollarBot/actions/workflows/styleChecker.yml/badge.svg)](https://github.com/Mrudanihada/DollarBot/actions/workflows/styleChecker.yml/)
 [![Platform](https://img.shields.io/badge/Platform-Telegram-blue)](https://desktop.telegram.org/)
 ![GitHub](https://img.shields.io/badge/Language-Python-blue.svg)
