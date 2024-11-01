@@ -241,4 +241,11 @@ def test_consistent_category_ordering(mock_telebot):
     ]
     result = estimate.calculate_estimate(history, 1)
     categories = [line.split(" $")[0] for line in result.strip().split("\n")]
-    assert len(categories) == 3    
+    assert len(categories) == 3  
+
+# 16. Test very small numbers
+@patch("telebot.telebot")
+def test_very_small_numbers(mock_telebot):
+    history = ["01-Jan-2024,Tips,0.01"]
+    result = estimate.calculate_estimate(history, 1)
+    assert "Tips $0.01" in result      
