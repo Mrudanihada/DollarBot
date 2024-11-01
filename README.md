@@ -96,7 +96,7 @@ Track Every Penny, Save Every Dollar !!
 
 ## Demo
 
-[![Link to Demo](https://img.youtube.com/vi/E7EAHumVHhk/0.jpg)](https://drive.google.com/file/d/1la5WZErTosa0H2pqNbv9Xam3WBsTtg_S/view?usp=share_link)
+[!Link to Demo](https://drive.google.com/file/d/1la5WZErTosa0H2pqNbv9Xam3WBsTtg_S/view?usp=share_link)
 
 ## Techstack
 
