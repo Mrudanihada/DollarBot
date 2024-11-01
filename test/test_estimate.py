@@ -275,4 +275,16 @@ def test_run_keyboard_markup(mock_telebot, mocker):
     message = create_message("test")
     estimate.run(message, mock_telebot)
     assert isinstance(mock_telebot.reply_to.call_args[1]['reply_markup'], 
-                     types.ReplyKeyboardMarkup)                    
+                     types.ReplyKeyboardMarkup)  
+
+# 20. Test chat action during calculation
+@patch("telebot.telebot")
+def test_chat_action_during_calculation(mock_telebot, mocker):
+    mocker.patch.object(estimate, "helper")
+    estimate.helper.getUserHistory.return_value = create_sample_history(5)
+    estimate.helper.getSpendEstimateOptions.return_value = ["Next day", "Next month"]
+    message = create_message("Next month")
+    message.text = "Next month"
+    estimate.estimate_total(message, mock_telebot)
+    assert mock_telebot.send_chat_action.called
+    assert mock_telebot.send_chat_action.call_args[0][1] == "typing"                                       
