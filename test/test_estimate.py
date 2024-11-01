@@ -308,3 +308,15 @@ def test_multiple_transactions_same_category_same_day(mock_telebot):
     ]
     result = estimate.calculate_estimate(history, 1)
     assert "Food $45.0" in result
+
+@patch("telebot.telebot")
+def test_category_names_with_numbers(mock_telebot):
+    history = [
+        "01-Jan-2024,Parking P2,15.00",
+        "01-Jan-2024,Room 101,50.00",
+        "01-Jan-2024,2nd Floor Cafe,25.00"
+    ]
+    result = estimate.calculate_estimate(history, 1)
+    assert "Parking P2 $15.0" in result
+    assert "Room 101 $50.0" in result
+    assert "2nd Floor Cafe $25.0" in result    
