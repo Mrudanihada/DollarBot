@@ -195,3 +195,13 @@ def test_category_with_spaces(mock_telebot):
     history = ["01-Jan-2024,Home Rent,1000.00"]
     result = estimate.calculate_estimate(history, 1)
     assert "Home Rent $1000.0" in result    
+
+# 11. Test run function with existing data
+@patch("telebot.telebot")
+def test_run_with_existing_data(mock_telebot, mocker):
+    mocker.patch.object(estimate, "helper")
+    estimate.helper.getUserHistory.return_value = create_sample_history(5)
+    estimate.helper.getSpendEstimateOptions.return_value = ["Next day", "Next month"]
+    message = create_message("test")
+    estimate.run(message, mock_telebot)
+    assert mock_telebot.reply_to.called
