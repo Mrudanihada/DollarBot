@@ -131,7 +131,16 @@ def test_post_category_selection_noMatchingCategory(mock_telebot, mocker):
     add.post_category_selection(message, mc,owed_by,paid_by,user_list)
     assert mc.reply_to.called
 
-
+@patch("telebot.telebot")
+def test_post_amount_input_working(mock_telebot, mocker):
+    mc = mock_telebot.return_value
+    mc.send_message.return_value = True
+    user_list = create_user_list()
+    paid_by = 'User1'
+    owed_by = ['User1','User2']
+    message = create_message("40")
+    add.post_category_selection(message, mc,owed_by,paid_by,user_list)
+    assert mc.send_message.called
 
 @patch("telebot.telebot")
 def test_post_amount_input_working_withdata(mock_telebot, mocker):
