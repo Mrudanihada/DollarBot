@@ -320,3 +320,10 @@ def test_category_names_with_numbers(mock_telebot):
     assert "Parking P2 $15.0" in result
     assert "Room 101 $50.0" in result
     assert "2nd Floor Cafe $25.0" in result    
+
+@patch("telebot.telebot")
+def test_long_period_estimation(mock_telebot):
+    history = ["01-Jan-2024,Rent,1000.00"]
+    # Testing for a year's estimation
+    result = estimate.calculate_estimate(history, 365)
+    assert "Rent $365000.0" in result    
