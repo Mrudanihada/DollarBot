@@ -1,7 +1,7 @@
 <hr>
 
 ![MIT license](https://img.shields.io/badge/License-MIT-green.svg)
-![Style Checker](https://github.com/ymdatta/DollarBot/actions/workflows/styleChecker.yml/badge.svg)
+[![Style Checker](https://github.com/Mrudanihada/DollarBot/actions/workflows/styleChecker.yml/badge.svg)](https://github.com/Mrudanihada/DollarBot/actions/workflows/styleChecker.yml/)
 [![Platform](https://img.shields.io/badge/Platform-Telegram-blue)](https://desktop.telegram.org/)
 ![GitHub](https://img.shields.io/badge/Language-Python-blue.svg)
 [![DOI](https://zenodo.org/badge/877556456.svg)](https://doi.org/10.5281/zenodo.14019202)
