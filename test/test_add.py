@@ -13,6 +13,22 @@ dateFormat = "%d-%b-%Y"
 timeFormat = "%H:%M"
 monthFormat = "%b-%Y"
 
+@patch("telebot.telebot")
+def test_user_choice_yes_response(mock_telebot):
+    """
+    Test user_choice function when user responds with 'Y'
+    """
+    mc = mock_telebot.return_value
+    mc.send_message.return_value = True
+    message = create_message("Y")
+    owed_by = ["User1"]
+    user_list = create_user_list()
+    paid_by = "User1"
+    
+    add.user_choice(message, mc, owed_by, user_list, paid_by)
+    
+    assert mc.send_message.called or mc.reply_to.called
+
 
 @patch("telebot.telebot")
 def test_select_user_no_remaining_users(mock_telebot):
