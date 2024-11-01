@@ -205,3 +205,15 @@ def test_run_with_existing_data(mock_telebot, mocker):
     message = create_message("test")
     estimate.run(message, mock_telebot)
     assert mock_telebot.reply_to.called
+
+# 13. Test multiple categories over time
+@patch("telebot.telebot")
+def test_multiple_categories_over_time(mock_telebot):
+    history = [
+        "01-Jan-2024,Food,10.00",
+        "01-Jan-2024,Transport,20.00",
+        "02-Jan-2024,Food,15.00",
+        "02-Jan-2024,Transport,25.00"
+    ]
+    result = estimate.calculate_estimate(history, 30)
+    assert all(cat in result for cat in ["Food", "Transport"])   
