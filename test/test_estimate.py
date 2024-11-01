@@ -217,3 +217,16 @@ def test_multiple_categories_over_time(mock_telebot):
     ]
     result = estimate.calculate_estimate(history, 30)
     assert all(cat in result for cat in ["Food", "Transport"])   
+
+# 14. Test response formatting
+@patch("telebot.telebot")
+def test_response_formatting(mock_telebot, mocker):
+    mocker.patch.object(estimate, "helper")
+    estimate.helper.getUserHistory.return_value = create_sample_history(5)
+    estimate.helper.getSpendEstimateOptions.return_value = ["Next day", "Next month"]
+    message = create_message("Next day")
+    message.text = "Next day"
+    estimate.estimate_total(message, mock_telebot)
+    args, _ = mock_telebot.send_message.call_args
+    assert "Here are your estimated spendings" in args[1]
+    assert "CATEGORIES,AMOUNT" in args[1]    
